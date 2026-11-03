@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Duelo de Figuritas 2D</title>
-<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#14101c;--paper:#f3efe6;--gold:#ffc928;--hp-green:#4cd964;--hp-yellow:#ffcc00;--hp-red:#ff3b30}
+:root{--ink:#14101c;--paper:#f3efe6;--gold:#ffc928}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;font-family:system-ui,sans-serif;color:var(--paper);background:repeating-linear-gradient(135deg,#2a1b4d 0 18px,#31215a 18px 36px);padding:12px;display:flex;justify-content:center}
-main{width:100%;max-width:960px}
+main{width:100%;max-width:860px}
 h1{font:1.6rem 'Russo One',Impact,sans-serif;margin:4px 0 8px;color:var(--gold);text-shadow:2px 2px 0 #000}
 h2{font:1.15rem 'Russo One',sans-serif;margin:6px 0 10px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:10px}
 .fig{--c1:#f2a81d;--c2:#e8870c;position:relative;aspect-ratio:1.9;height:auto;max-width:320px;margin:0 auto;border-radius:10px;background:linear-gradient(115deg,var(--c1),var(--c2));overflow:hidden;color:#fff;border:0;padding:0;text-align:left;font:inherit;width:100%;box-shadow:0 3px 0 #0006}
 .fig:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,#fff2 0 10px,#fff0 10px 22px)}
-button.fig{cursor:pointer;transition:transform .15s}
+button.fig{cursor:pointer}
 button.fig:hover:not(:disabled),button.fig:focus-visible{outline:3px solid var(--gold);transform:translateY(-2px)}
 button.fig:disabled{opacity:.3;cursor:not-allowed}
 .oval{position:absolute;left:8px;top:8px;height:74%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 40% 30%,#fff,#e9dfe9 70%);display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -45,7 +45,7 @@ button.cback:disabled{opacity:.6}
 #chatTog{position:fixed;bottom:10px;right:10px;z-index:6}
 .badge{background:#e23;color:#fff;border-radius:10px;padding:0 6px;margin-left:4px}
 .badge.hide,#chatTog.hide{display:none}
-.chat{position:fixed;bottom:52px;right:10px;width:min(340px,calc(100vw - 20px));height:min(330px,55vh);background:#1b1230f2;border:2px solid var(--gold);border-radius:12px;z-index:60;display:flex;flex-direction:column;padding:8px;gap:6px}
+.chat{position:fixed;bottom:52px;right:10px;width:min(340px,calc(100vw - 20px));height:min(330px,55vh);background:#1b1230f2;border:2px solid var(--gold);border-radius:12px;z-index:6;display:flex;flex-direction:column;padding:8px;gap:6px}
 .chat.hide{display:none}
 .chatlog{flex:1;overflow-y:auto;font-size:.9rem;display:flex;flex-direction:column;gap:4px}
 .msg{padding:5px 9px;border-radius:10px;background:#fff2;max-width:85%;overflow-wrap:anywhere;align-self:flex-start}
@@ -61,59 +61,7 @@ button.cback:disabled{opacity:.6}
 b.code{font:1.6rem 'Russo One',sans-serif;color:var(--gold);letter-spacing:.15em}
 .names{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}.names label{display:flex;flex-direction:column;gap:4px;font-size:.9rem}.names input{font:1rem system-ui,sans-serif;padding:8px 10px;border-radius:8px;border:2px solid var(--gold);background:#fff;color:var(--ink);width:190px}
 .arena{display:flex;flex-direction:column;gap:10px}
-
-/* ARENA DE BATALLA 2D CON FONDOS REALES */
-.stage2d-container{position:relative;width:100%;height:320px;border-radius:14px;border:3px solid var(--gold);overflow:hidden;background:#111;box-shadow:0 8px 24px #0009;margin-bottom:8px}
-.stage2d-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:background-image .6s ease-in-out, filter .5s;filter:brightness(0.92)}
-
-.stage-base{position:absolute;border-radius:50%;background:rgba(0,0,0,0.45);border:2px solid rgba(255,255,255,0.25);box-shadow:0 6px 16px rgba(0,0,0,0.7);transform:scaleY(0.4)}
-.base-player{bottom:10px;left:8%;width:180px;height:90px}
-.base-foe{top:60px;right:8%;width:160px;height:80px}
-
-.sprite-box{position:absolute;display:flex;justify-content:center;align-items:flex-end;pointer-events:none;transition:transform .2s ease-out}
-.sprite-player{bottom:30px;left:10%;z-index:10;width:140px;height:140px}
-.sprite-foe{top:20px;right:10%;z-index:5;width:120px;height:120px}
-.sprite-box img{max-width:100%;max-height:100%;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 6px 8px rgba(0,0,0,0.6))}
-.sprite-player img{transform:scale(1.4)}
-.sprite-foe img{transform:scale(1.25)}
-
-/* HUD RPG sobre Escenario */
-.hud-box{position:absolute;background:rgba(20, 16, 28, 0.88);border:2px solid var(--gold);border-radius:10px;padding:6px 10px;width:220px;box-shadow:0 4px 10px #0008;z-index:15;backdrop-filter:blur(4px)}
-.hud-player-box{bottom:12px;right:12px}
-.hud-foe-box{top:12px;left:12px}
-.hud-title{font:0.85rem 'Russo One',sans-serif;color:#fff;display:flex;justify-content:space-between;align-items:center}
-.hud-hp-track{height:10px;background:#222;border-radius:5px;overflow:hidden;border:1px solid #444;margin:4px 0 2px}
-.hud-hp-bar{height:100%;width:100%;background:var(--hp-green);transition:width .5s ease, background-color .5s ease}
-.hud-hp-val{font-size:0.7rem;text-align:right;font-weight:700}
-.hud-orbs{display:flex;gap:3px;align-items:center;margin-top:2px}
-
-/* Animaciones 2D */
-.anim-dash-p{animation:dashP .35s ease-in-out}
-.anim-dash-f{animation:dashF .35s ease-in-out}
-@keyframes dashP{0%{transform:translate(0,0)}50%{transform:translate(45px,-30px) scale(1.1)}100%{transform:translate(0,0)}}
-@keyframes dashF{0%{transform:translate(0,0)}50%{transform:translate(-45px,30px) scale(1.1)}100%{transform:translate(0,0)}}
-
-.anim-hit-flash{animation:hitFlash .4s ease-in-out}
-@keyframes hitFlash{0%,100%{transform:translateX(0);filter:none}20%,60%{transform:translateX(-10px);filter:brightness(2.5) drop-shadow(0 0 12px #f00)}40%,80%{transform:translateX(10px)}}
-
-.anim-evo-spark{animation:evoSpark .8s ease-in-out}
-@keyframes evoSpark{0%{filter:brightness(1)}50%{filter:brightness(6) drop-shadow(0 0 30px #ffc928)}100%{filter:brightness(1)}}
-
-/* Floating Damage Popup */
-.damage-pop{position:absolute;font:1.8rem 'Press Start 2P','Russo One',sans-serif;color:#ff3b30;text-shadow:3px 3px 0 #000, -2px -2px 0 #000;z-index:30;pointer-events:none;animation:popFloat .8s ease-out forwards}
-@keyframes popFloat{0%{opacity:0;transform:translateY(0) scale(.6)}20%{opacity:1;transform:translateY(-15px) scale(1.2)}100%{opacity:0;transform:translateY(-45px) scale(1)}}
-
-/* FX Proyectiles */
-.fx-ball{position:absolute;z-index:25;width:34px;height:34px;border-radius:50%;pointer-events:none;opacity:0}
-.fx-fire{background:radial-gradient(circle, #fff, #ff5722, #b71c1c);box-shadow:0 0 18px #ff5722}
-.fx-water{background:radial-gradient(circle, #fff, #03a9f4, #01579b);box-shadow:0 0 18px #03a9f4}
-.fx-grass{background:radial-gradient(circle, #fff, #8bc34a, #1b5e20);box-shadow:0 0 18px #8bc34a}
-.fx-elec{background:radial-gradient(circle, #fff, #ffeb3b, #f57f17);box-shadow:0 0 18px #ffeb3b}
-.fx-phys{background:radial-gradient(circle, #fff, #eee, #9e9e9e);box-shadow:0 0 15px #fff}
-
-@keyframes flyToF{0%{left:20%;bottom:50px;opacity:1;transform:scale(.6)}100%{left:75%;bottom:180px;opacity:1;transform:scale(1.2)}}
-@keyframes flyToP{0%{left:75%;bottom:180px;opacity:1;transform:scale(.6)}100%{left:20%;bottom:50px;opacity:1;transform:scale(1.2)}}
-
+@media (min-width:720px){.arena{display:grid;grid-template-columns:1fr 1fr}#stage2dContainer,#s0{order:1}#s1{order:2}.banner,.mid,.log,#again{grid-column:1/-1}.banner{order:3}.mid{order:4}.log{order:5}#again{order:6}}
 .side{background:#0004;border-radius:12px;padding:10px}
 .side.turn{outline:3px solid var(--gold)}
 .hpbar{height:14px;background:#000a;border-radius:7px;margin:8px 0 4px;overflow:hidden}
@@ -139,6 +87,7 @@ button.b:focus-visible{outline:3px solid #fff}
 .log div:first-child{font-weight:700}
 .rules{font-size:.85rem;opacity:.9;line-height:1.4}
 .hide{display:none}
+@media (prefers-reduced-motion:reduce){.die.go,.hit .fig{animation:none}}
 
 /* ---- Ajuste a celular, reloj y lobby ---- */
 html{-webkit-text-size-adjust:100%}
@@ -150,18 +99,15 @@ body{min-height:100dvh;padding:max(10px,env(safe-area-inset-top)) max(10px,env(s
 .clock{margin-left:8px;font-family:'Russo One',sans-serif}.clock.low{color:#ff6b5a}
 details.rules summary{cursor:pointer;color:var(--gold);font-weight:700;margin-bottom:6px}
 .chat{bottom:auto;top:56px;right:10px}
+.arena{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#stage2dContainer{grid-column:1/-1;order:0;margin-bottom:6px}
+#s0{order:1}#s1{order:2}.banner,.mid,.log,#again{grid-column:1/-1}.banner{order:3}.mid{order:4}.log{order:5}#again{order:6}
 .row{flex-wrap:wrap}
 .lbl .sh{display:none}
 .pickgrid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}
 .cback{aspect-ratio:1;max-width:none}
 .cback .bt{font-size:.72rem}
 @media (max-width:719px){
-  .stage2d-container{height:240px}
-  .sprite-player{width:105px;height:105px;bottom:20px;left:6%}
-  .sprite-foe{width:90px;height:90px;top:15px;right:6%}
-  .hud-box{width:150px;padding:4px 6px}
-  .hud-title{font-size:0.7rem}
-  .hud-hp-val{font-size:0.6rem}
   .side{padding:6px}
   .side .fig{aspect-ratio:auto;height:104px;max-width:none}
   .side .brand,.side .info div:nth-child(n+3){display:none}
@@ -190,11 +136,86 @@ details.rules summary{cursor:pointer;color:var(--gold);font-weight:700;margin-bo
 #sides .side:last-child:nth-child(odd){grid-column:1/-1}
 .side.tgt{outline:3px dashed #ff5a3c}.side.dead{opacity:.4}
 .lobbylog{flex:none;height:220px;background:#0004;border-radius:8px;padding:6px}
+
+/* ---- ESCENARIO 2D Y SPRITES ANIMADOS ---- */
+#stage2d{
+  position:relative;
+  width:100%;
+  height:240px;
+  border-radius:14px;
+  overflow:hidden;
+  border:3px solid var(--gold);
+  box-shadow:0 8px 24px rgba(0,0,0,0.6);
+  background:#1a102f;
+}
+#stage2dBg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  background-color:#1a102f;
+  background-image:radial-gradient(circle at 50% 80%, rgba(255, 201, 40, 0.25) 0%, transparent 60%), linear-gradient(180deg, #2a1b4d 0%, #140d28 100%);
+  background-size:cover;
+  background-position:center;
+  transition:background-image 0.4s ease-in-out;
+}
+.stage-platform{
+  position:absolute;
+  border-radius:50%;
+  background:rgba(0,0,0,0.35);
+  box-shadow:0 0 15px rgba(255,255,255,0.2);
+  transform:scaleY(0.45);
+}
+.platform-player{bottom:15px;left:8%;width:170px;height:45px;background:radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0.6) 80%)}
+.platform-foe{top:65px;right:10%;width:130px;height:35px;background:radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0.6) 80%)}
+
+.sprite-wrapper{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;pointer-events:none;transition:transform .3s, filter .3s}
+.sprite-wrapper.player{bottom:25px;left:12%;z-index:2}
+.sprite-wrapper.foe{top:35px;right:14%;z-index:1}
+
+.sprite-img{max-height:110px;object-fit:contain;filter:drop-shadow(0 6px 8px rgba(0,0,0,0.5))}
+.sprite-wrapper.player .sprite-img{transform:scale(1.35);transform-origin:bottom center}
+.sprite-wrapper.foe .sprite-img{transform:scale(1.05);transform-origin:bottom center}
+
+.sprite-wrapper.anim-atk-p{animation:atkP .4s ease-in-out}
+.sprite-wrapper.anim-atk-f{animation:atkF .4s ease-in-out}
+@keyframes atkP{0%{transform:translate(0,0)}50%{transform:translate(50px,-30px) scale(1.15)}100%{transform:translate(0,0)}}
+@keyframes atkF{0%{transform:translate(0,0)}50%{transform:translate(-50px,30px) scale(1.15)}100%{transform:translate(0,0)}}
+
+.sprite-wrapper.anim-hit{animation:hitShake .4s ease-in-out;filter:brightness(2) drop-shadow(0 0 12px #ff3300)}
+@keyframes hitShake{0%,100%{transform:translate(0,0)}20%{transform:translate(-10px,5px)}40%{transform:translate(10px,-5px)}60%{transform:translate(-8px,-3px)}80%{transform:translate(6px,3px)}}
+
+.sprite-wrapper.anim-evo{animation:evoGlow .9s ease-in-out}
+@keyframes evoGlow{0%{filter:brightness(1)}50%{filter:brightness(4) drop-shadow(0 0 25px var(--gold));transform:scale(1.3)}100%{filter:brightness(1)}}
+
+/* Proyectiles visuales en 2D */
+.proj{position:absolute;width:24px;height:24px;border-radius:50%;z-index:10;pointer-events:none;transform:translate(-50%,-50%)}
+.proj.p-to-f{animation:projPF .45s linear forwards}
+.proj.f-to-p{animation:projFP .45s linear forwards}
+@keyframes projPF{0%{left:20%;top:70%;opacity:1;transform:scale(0.6)}100%{left:78%;top:35%;opacity:0;transform:scale(1.5)}}
+@keyframes projFP{0%{left:78%;top:35%;opacity:1;transform:scale(0.6)}100%{left:20%;top:70%;opacity:0;transform:scale(1.5)}}
+
+.proj-fire{background:radial-gradient(circle,#ffeb3b,#ff5722);box-shadow:0 0 15px #ff5722}
+.proj-water{background:radial-gradient(circle,#e0f7fa,#0288d1);box-shadow:0 0 15px #0288d1}
+.proj-grass{background:radial-gradient(circle,#dc8,#2e7d32);box-shadow:0 0 15px #4caf50;border-radius:20% 80%}
+.proj-e{background:radial-gradient(circle,#fff,#ffeb3b);box-shadow:0 0 18px #ffeb3b}
+.proj-p{background:radial-gradient(circle,#f3e5f5,#7b1fa2);box-shadow:0 0 15px #ab47bc}
+
+/* Texto flotante de daño */
+.dmg-pop{position:absolute;font:2rem 'Russo One',sans-serif;color:#ff3b30;text-shadow:2px 2px 0 #000,-1px -1px 0 #000;z-index:12;pointer-events:none;animation:dmgUp .8s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards}
+@keyframes dmgUp{0%{opacity:0;transform:translateY(10px) scale(0.5)}30%{opacity:1;transform:translateY(-15px) scale(1.2)}100%{opacity:0;transform:translateY(-40px) scale(0.9)}}
+
+.stage-hud{position:absolute;top:8px;left:8px;right:8px;display:flex;justify-content:space-between;z-index:3;pointer-events:none}
+.stage-card{background:rgba(20,16,28,0.75);backdrop-filter:blur(4px);border:2px solid var(--gold);border-radius:8px;padding:6px 10px;min-width:140px;color:#fff;font-family:'Russo One',sans-serif;box-shadow:0 4px 10px rgba(0,0,0,0.5)}
+.stage-card .name{font-size:.82rem;color:var(--gold);margin-bottom:2px;display:flex;justify-content:space-between}
+.stage-card .hp-val{font-size:.72rem;opacity:.9}
+.stage-hp{height:8px;background:rgba(0,0,0,0.6);border-radius:4px;overflow:hidden;margin-top:2px}
+.stage-hp i{display:block;height:100%;background:linear-gradient(90deg,#e23,#fa3 60%,#4c5);transition:width .4s ease-out}
 </style>
 </head>
 <body>
 <main>
-<header class="top"><h1>Duelo de Figuritas 2D</h1>
+<header class="top"><h1>Duelo de Figuritas</h1>
 <button class="b sm hide" id="menuBtn">⬅ Menú</button>
 <button class="b sm hide" id="chatTog" aria-expanded="false">💬 Chat<span class="badge hide" id="chatBadge">0</span></button>
 <button class="b sm" id="muteBtn" aria-label="Silenciar sonidos">🔊</button></header>
@@ -263,44 +284,23 @@ details.rules summary{cursor:pointer;color:var(--gold);font-weight:700;margin-bo
 </section>
 
 <section id="game" class="hide">
-  <div class="banner" id="banner"></div>
-  
-  <!-- ARENA DE BATALLA 2D INTERACTIVA -->
-  <div class="stage2d-container">
-    <div class="stage2d-bg" id="stage2dBg"></div>
-    <div class="stage-base base-player"></div>
-    <div class="stage-base base-foe"></div>
-    
-    <!-- Sprites 2D Animados -->
-    <div class="sprite-box sprite-player" id="spritePlayerBox">
-      <img id="spritePlayerImg" src="" alt="Player Pokemon">
-    </div>
-    <div class="sprite-box sprite-foe" id="spriteFoeBox">
-      <img id="spriteFoeImg" src="" alt="Foe Pokemon">
-    </div>
-
-    <!-- Proyectil FX -->
-    <div class="fx-ball" id="fxBall"></div>
-
-    <!-- HUD Jugador (Abajo Derecha) -->
-    <div class="hud-box hud-player-box" id="hudPlayerBox">
-      <div class="hud-title"><span id="hudPName">--</span> <span id="hudPSt">--</span></div>
-      <div class="hud-hp-track"><div class="hud-hp-bar" id="hudPHpBar"></div></div>
-      <div class="hud-hp-val" id="hudPHpVal">0/0 HP</div>
-      <div class="hud-orbs" id="hudPOrbs"></div>
-    </div>
-
-    <!-- HUD Rival (Arriba Izquierda) -->
-    <div class="hud-box hud-foe-box" id="hudFoeBox">
-      <div class="hud-title"><span id="hudFName">--</span> <span id="hudFSt">--</span></div>
-      <div class="hud-hp-track"><div class="hud-hp-bar" id="hudFHpBar"></div></div>
-      <div class="hud-hp-val" id="hudFHpVal">0/0 HP</div>
-      <div class="hud-orbs" id="hudFOrbs"></div>
-    </div>
-  </div>
-
   <div class="arena">
+    <!-- CONTENEDOR DE BATALLA 2D -->
+    <div id="stage2dContainer">
+      <div id="stage2d">
+        <div id="stage2dBg"></div>
+        <div class="stage-platform platform-player"></div>
+        <div class="stage-platform platform-foe"></div>
+        <div class="stage-hud">
+          <div class="stage-card" id="hudP"><div class="name"><span id="hudPName">-</span><span id="hudPLv">L1</span></div><div class="stage-hp"><i id="hudPHp" style="width:100%"></i></div><div class="hp-val" id="hudPTxt">0/0 HP</div></div>
+          <div class="stage-card" id="hudF"><div class="name"><span id="hudFName">-</span><span id="hudFLv">L1</span></div><div class="stage-hp"><i id="hudFHp" style="width:100%"></i></div><div class="hp-val" id="hudFTxt">0/0 HP</div></div>
+        </div>
+        <div class="sprite-wrapper player" id="sprP"><img class="sprite-img" id="imgSprP" alt="" src=""></div>
+        <div class="sprite-wrapper foe" id="sprF"><img class="sprite-img" id="imgSprF" alt="" src=""></div>
+      </div>
+    </div>
     <div id="sides"></div>
+    <div class="banner" id="banner"></div>
     <div class="mid">
       <div class="die" id="die">?</div>
       <button class="b" id="rollBtn">Tirar dado</button>
@@ -324,6 +324,8 @@ details.rules summary{cursor:pointer;color:var(--gold);font-weight:700;margin-bo
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
 // id|nombre|elemento|color|estado|rol|ataque básico|ataque fuerte
+// estado = el nivel que dice la figurita (1, 2, 3). L = legendario / sin evolución conocida.
+// rol: a = atacante, t = tanque, b = balanceado, k = muy resistente, l = legendario, j = débil/broma
 const D=`1|Bulbasaur|Césped/Veneno|g|1|b|Látigo cepa|Rayo solar
 2|Ivysaur|Césped/Veneno|g|2|b|Hoja afilada|Rayo solar
 3|Venusaur|Césped/Veneno|g|3|t|Hoja afilada|Rayo solar
@@ -490,6 +492,7 @@ const D=`1|Bulbasaur|Césped/Veneno|g|1|b|Látigo cepa|Rayo solar
 192|Sunflora|Césped|g|2|b|Absorber|Rayo solar
 242|Blissey|Normal|e|3|k|Bofetón|Bomba huevo`;
 
+// Tabla de evoluciones explícitas (ID -> ID siguiente)
 const EVOLUTIONS = {
   1: 2, 2: 3, 4: 5, 5: 6, 7: 8, 8: 9, 13: 14, 14: 15, 16: 17, 17: 18,
   172: 25, 25: 26, 29: 30, 30: 31, 32: 33, 33: 34, 37: 38, 58: 59,
@@ -500,52 +503,41 @@ const EVOLUTIONS = {
   163: 164, 120: 121, 116: 117, 117: 230, 118: 119, 104: 105, 236: 106,
   238: 124, 239: 125, 100: 101, 109: 110, 43: 44, 44: 45, 52: 53,
   54: 55, 48: 49, 39: 40, 41: 42, 42: 169, 90: 91, 81: 82, 86: 87,
-  98: 99, 69: 70, 70: 71, 175: 176, 165: 166, 167: 168, 173: 35,
-  35: 36, 179: 180, 180: 181, 187: 188, 188: 189, 191: 192
+  98: 99, 69: 70, 70: 71, 175: 176, 165: 166, 167: 168, 173: 35, 35: 36,
+  179: 180, 180: 181, 187: 188, 188: 189, 191: 192
 };
 
 const B={1:{hp:55,b:13,s:28,th:6},2:{hp:75,b:18,s:40,th:6},3:{hp:100,b:26,s:58,th:6},L:{hp:90,b:24,s:72,th:6}};
 const R={a:[.88,1.15],t:[1.15,.88],b:[1,1],k:[1.5,.9],l:[1,1],j:[.8,.5]};
 const C={g:'grass',f:'fire',w:'water',p:'poison',y:'psy',b:'bug',e:''};
 const M=D.split('\n').map(l=>{const [id,n,el,c,st,r,a1,a2]=l.split('|'),s=B[st],[h,d]=R[r];
-  return{id:+id,n,el,cl:C[c],st,a1,a2,hp:Math.round(s.hp*h/5)*5,b:Math.round(s.b*d),s:Math.round(s.s*d),th:s.th}});
+  return{id:+id,n,el,cl:C[c],c,st,a1,a2,hp:Math.round(s.hp*h/5)*5,b:Math.round(s.b*d),s:Math.round(s.s*d),th:s.th}});
 const MAP_M = {};
 M.forEach(m => MAP_M[m.id] = m);
 
 const $=id=>document.getElementById(id),rnd=()=>1+Math.floor(Math.random()*6),wait=ms=>new Promise(r=>setTimeout(r,ms));
 const IMG='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/';
 
-// Repositorio de Fondos de Arena de Batalla Reales desde Pokémon Showdown Client
-const SHOWDOWN_BG_BASE = 'https://raw.githubusercontent.com/smogon/pokemon-showdown-client/master/sprites/battle-bgs/';
+// Sprites 2D Animados Gen 5 (Pokémon Showdown)
+const SPRITE_ANIM_FRONT = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/';
+const SPRITE_ANIM_BACK  = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/back/';
+
+// Mapeo con URLs activas del servidor oficial de Pokémon Showdown (gen6bgs)
 const BATTLE_BG_MAP = {
-  grass: SHOWDOWN_BG_BASE + 'grass.png',
-  fire: SHOWDOWN_BG_BASE + 'desert.png',
-  water: SHOWDOWN_BG_BASE + 'water.png',
-  poison: SHOWDOWN_BG_BASE + 'cave.png',
-  psy: SHOWDOWN_BG_BASE + 'space.png',
-  bug: SHOWDOWN_BG_BASE + 'forest.png',
-  default: SHOWDOWN_BG_BASE + 'arena.png'
+  g: 'https://play.pokemonshowdown.com/sprites/gen6bgs/bg-meadow.jpg',
+  f: 'https://play.pokemonshowdown.com/sprites/gen6bgs/bg-desert.jpg',
+  w: 'https://play.pokemonshowdown.com/sprites/gen6bgs/bg-beach.jpg',
+  p: 'https://play.pokemonshowdown.com/sprites/gen6bgs/bg-earthycave.jpg',
+  y: 'https://play.pokemonshowdown.com/sprites/gen6bgs/bg-space.jpg',
+  b: 'https://play.pokemonshowdown.com/sprites/gen6bgs/bg-forest.jpg',
+  e: 'https://play.pokemonshowdown.com/sprites/gen6bgs/bg-city.jpg'
 };
-
-// Sprites Animados 2D (Showdown / Gen V)
-function getSpriteUrl(id, isBack) {
-  const folder = isBack ? 'back/' : '';
-  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/${folder}${id}.gif`;
-}
-
-function set2dSprite(imgEl, id, isBack) {
-  const animatedUrl = getSpriteUrl(id, isBack);
-  const fallbackUrl = (isBack ? 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/' : IMG) + id + (isBack ? '.png' : '.png');
-  imgEl.onerror = () => { imgEl.onerror = null; imgEl.src = fallbackUrl; };
-  imgEl.src = animatedUrl;
-}
 
 const fig=m=>`<div class="oval"><b>${m.id}</b><img alt="" src="${IMG}${m.id}.png" onload="this.previousElementSibling.remove()" onerror="this.remove()"></div>
 <div class="brand">¡Atrápalos ya!</div>
 <div class="info"><div>ELEMENTO<span>${m.el}</span></div><div>ESTADO · HP<span>${m.st==='L'?'Legendario':m.st} · ${m.hp} HP</span></div><div>ATAQUE (2 piedras)<span>${m.a1} · ${m.b}</span></div><div>ATAQUE FUERTE (4 piedras)<span>${m.a2} · ${m.s}</span></div></div>
 <div class="tag">#${m.id} ${m.n}</div>`;
 const cls=m=>'fig '+m.cl;
-
 let P,G=null,phase='lobby',ME=null,NET={role:null,conn:null,conns:[],hi:[],peer:null},N=2,TEAM=false,TG=-1,lastRoll=-1,lastHit=-1,lastEv=0,rvPeek=false,rvFresh=false,peekK=null,BOT=false,botPending=false,lastTickLeft=-1;
 const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -597,6 +589,7 @@ const loadRank=()=>{try{return JSON.parse(localStorage.getItem('duelo_rank'))||{
 const saveRank=r=>{try{localStorage.setItem('duelo_rank',JSON.stringify(r))}catch(e){}};
 const isDef=n=>/^(jugador \d|compu)$/i.test(String(n).trim());
 const prof=(r,n)=>r[n.toLowerCase()]||(r[n.toLowerCase()]={n,w:0,l:0,adv:0});
+
 const DB_URL='https://duelo-figuritas-default-rtdb.firebaseio.com';
 const DB=DB_URL.replace(/\/+$/,'');
 let clockOff=0,clockOk=false,RK=null,rkBusy=0;
@@ -710,89 +703,10 @@ function startGame(){
 }
 
 const act=k=>G.pl[k].mons[G.pl[k].a],ben=k=>G.pl[k].mons[1-G.pl[k].a],cur=()=>act(G.turn);
+
 function getNextEvo(m){
   const nextId = EVOLUTIONS[m.id];
   return nextId ? MAP_M[nextId] : null;
-}
-
-/* RENDERIZADO DE LA ARENA 2D VISUAL CON FONDOS REALES DE POKÉMON SHOWDOWN */
-function render2dArena(){
-  if(!G) return;
-  const pIndex = ME !== null ? ME : 0;
-  const fIndex = G.pl.findIndex((_, j) => j !== pIndex && !G.pl[j].dead);
-  const targetFoeIndex = fIndex >= 0 ? fIndex : (pIndex === 0 ? 1 : 0);
-
-  const pMon = act(pIndex);
-  const fMon = act(targetFoeIndex);
-
-  // Cargar imagen de Fondo Real de Arena según el Elemento del Pokémon
-  const bg = $('stage2dBg');
-  const elClass = pMon.m.cl || 'default';
-  const bgUrl = BATTLE_BG_MAP[elClass] || BATTLE_BG_MAP.default;
-  bg.style.backgroundImage = `url('${bgUrl}')`;
-
-  // Cargar Sprites 2D Animados
-  set2dSprite($('spritePlayerImg'), pMon.m.id, true);
-  set2dSprite($('spriteFoeImg'), fMon.m.id, false);
-
-  // HUD Jugador (Abajo Derecha)
-  $('hudPName').textContent = pMon.m.n;
-  $('hudPSt').textContent = 'Nv.' + (pMon.m.st==='L'?'★':pMon.m.st);
-  const pPct = Math.max(0, (pMon.hp / pMon.max) * 100);
-  const pBar = $('hudPHpBar');
-  pBar.style.width = pPct + '%';
-  pBar.style.backgroundColor = pPct > 50 ? 'var(--hp-green)' : pPct > 20 ? 'var(--hp-yellow)' : 'var(--hp-red)';
-  $('hudPHpVal').textContent = `${pMon.hp}/${pMon.max} HP`;
-  $('hudPOrbs').innerHTML = [0,1,2,3].map(i => `<i class="coin${G.pl[pIndex].t > i ? '' : ' off'}"></i>`).join('');
-
-  // HUD Rival (Arriba Izquierda)
-  $('hudFName').textContent = fMon.m.n;
-  $('hudFSt').textContent = 'Nv.' + (fMon.m.st==='L'?'★':fMon.m.st);
-  const fPct = Math.max(0, (fMon.hp / fMon.max) * 100);
-  const fBar = $('hudFHpBar');
-  fBar.style.width = fPct + '%';
-  fBar.style.backgroundColor = fPct > 50 ? 'var(--hp-green)' : fPct > 20 ? 'var(--hp-yellow)' : 'var(--hp-red)';
-  $('hudFHpVal').textContent = `${fMon.hp}/${fMon.max} HP`;
-  $('hudFOrbs').innerHTML = [0,1,2,3].map(i => `<i class="coin${G.pl[targetFoeIndex].t > i ? '' : ' off'}"></i>`).join('');
-}
-
-function trigger2dAttack(isPlayerAttacker, elementCl, dmg) {
-  const attacker = isPlayerAttacker ? $('spritePlayerBox') : $('spriteFoeBox');
-  const target = isPlayerAttacker ? $('spriteFoeBox') : $('spritePlayerBox');
-  const ball = $('fxBall');
-
-  // Embestida 2D
-  attacker.classList.remove('anim-dash-p', 'anim-dash-f');
-  void attacker.offsetWidth;
-  attacker.classList.add(isPlayerAttacker ? 'anim-dash-p' : 'anim-dash-f');
-
-  // Disparo Proyectil Visual
-  ball.className = 'fx-ball fx-' + (elementCl==='fire'?'fire':elementCl==='water'?'water':elementCl==='grass'?'grass':elementCl==='e'?'elec':'phys');
-  ball.style.animation = (isPlayerAttacker ? 'flyToF' : 'flyToP') + ' .4s forwards';
-
-  setTimeout(() => {
-    ball.style.animation = '';
-    // Flash de impacto
-    target.classList.remove('anim-hit-flash');
-    void target.offsetWidth;
-    target.classList.add('anim-hit-flash');
-
-    // Daño Flotante Pop-up
-    const pop = document.createElement('div');
-    pop.className = 'damage-pop';
-    pop.textContent = '-' + dmg;
-    pop.style.left = isPlayerAttacker ? '70%' : '20%';
-    pop.style.top = isPlayerAttacker ? '20%' : '55%';
-    $('game').querySelector('.stage2d-container').appendChild(pop);
-    setTimeout(() => pop.remove(), 800);
-  }, 250);
-}
-
-function trigger2dEvo(isPlayer) {
-  const box = isPlayer ? $('spritePlayerBox') : $('spriteFoeBox');
-  box.classList.remove('anim-evo-spark');
-  void box.offsetWidth;
-  box.classList.add('anim-evo-spark');
 }
 
 function sideHTML(k){
@@ -820,8 +734,71 @@ function can(a,who){
        :a==='keep'?G.rolled:false;
 }
 
+/* RENDERIZADO DE ESCENARIO 2D CON FONDOS E IMÁGENES ANIMADAS */
+function renderStage2D(){
+  if(!G||phase!=='game')return;
+  const pIdx = ME!==null ? ME : 0;
+  const fIdx = foes(pIdx)[0] !== undefined ? foes(pIdx)[0] : (pIdx===0?1:0);
+  const pMon = act(pIdx), fMon = act(fIdx);
+
+  // Cargar imagen de fondo del mapa oficial
+  const stageBg = $('stage2dBg');
+  if(stageBg && pMon && pMon.m){
+    const elemCode = pMon.m.c || 'e';
+    const bgUrl = BATTLE_BG_MAP[elemCode] || BATTLE_BG_MAP.e;
+    stageBg.style.backgroundImage = `url('${bgUrl}')`;
+    stageBg.style.backgroundSize = 'cover';
+    stageBg.style.backgroundPosition = 'center';
+  }
+
+  $('hudPName').textContent = pMon.m.n;
+  $('hudPLv').textContent = pMon.m.st==='L'?'LEG':`N${pMon.m.st}`;
+  $('hudPHp').style.width = `${Math.max(0,(pMon.hp/pMon.max)*100)}%`;
+  $('hudPTxt').textContent = `${pMon.hp}/${pMon.max} HP`;
+
+  $('hudFName').textContent = fMon.m.n;
+  $('hudFLv').textContent = fMon.m.st==='L'?'LEG':`N${fMon.m.st}`;
+  $('hudFHp').style.width = `${Math.max(0,(fMon.hp/fMon.max)*100)}%`;
+  $('hudFTxt').textContent = `${fMon.hp}/${fMon.max} HP`;
+
+  // Asignar Sprites (Jugador: Espalda Animada / Rival: Frente Animado)
+  const imgP = $('imgSprP'), imgF = $('imgSprF');
+  const srcP = `${SPRITE_ANIM_BACK}${pMon.m.id}.gif`;
+  const srcF = `${SPRITE_ANIM_FRONT}${fMon.m.id}.gif`;
+
+  if(imgP.dataset.id != pMon.m.id){
+    imgP.dataset.id = pMon.m.id;
+    imgP.src = srcP;
+    imgP.onerror = ()=>{ imgP.src = `${IMG}${pMon.m.id}.png`; };
+  }
+  if(imgF.dataset.id != fMon.m.id){
+    imgF.dataset.id = fMon.m.id;
+    imgF.src = srcF;
+    imgF.onerror = ()=>{ imgF.src = `${IMG}${fMon.m.id}.png`; };
+  }
+}
+
+function spawnProjectile(isPlayerAttacker, elemClass){
+  const stage = $('stage2d');if(!stage)return;
+  const p = document.createElement('div');
+  const typeCl = elemClass ? `proj-${elemClass}` : 'proj-e';
+  p.className = `proj ${isPlayerAttacker?'p-to-f':'f-to-p'} ${typeCl}`;
+  stage.appendChild(p);
+  setTimeout(()=>p.remove(),480);
+}
+
+function popDamage(targetIsPlayer, amount){
+  const stage = $('stage2d');if(!stage)return;
+  const d = document.createElement('div');
+  d.className = 'dmg-pop';
+  d.textContent = `-${amount}`;
+  d.style.left = targetIsPlayer ? '22%' : '72%';
+  d.style.top = targetIsPlayer ? '55%' : '20%';
+  stage.appendChild(d);
+  setTimeout(()=>d.remove(),800);
+}
+
 function render(){
-  render2dArena();
   const S=$('sides');if(S.children.length!==G.pl.length)S.innerHTML=G.pl.map((_,k)=>`<div class="side" id="s${k}"></div>`).join('');
   const fo=G.over?[]:foes(G.turn),acting=ME===null||G.turn===ME,tg=fo.length?tgt():-1;
   G.pl.forEach((p,k)=>{const e=$('s'+k);e.innerHTML=sideHTML(k);e.classList.toggle('turn',G.turn===k&&!G.over);e.classList.toggle('dead',!!p.dead);e.classList.toggle('tgt',acting&&fo.length>1&&k===tg)});
@@ -843,6 +820,8 @@ function render(){
   if(G.over&&phase==='game'&&recDone!==G.gid){recDone=G.gid;recordResult();if(ADV&&ME===0)advStep(G.winners.includes(0))}
   $('again').textContent=(ADV&&ADV.lbl)||'Nueva partida';$('again').classList.toggle('hide',!G.over);
   $('log').innerHTML=G.log.slice(0,3).map(x=>`<div>${x}</div>`).join('');
+
+  renderStage2D();
   tick();
   sync();
   botThink();
@@ -867,8 +846,28 @@ async function hit(kind,t){
   const a=cur(),pl=G.pl[G.turn],f=foes(G.turn),k=f.includes(t)?t:f[0],d=act(k),sp=kind==='sp',dmg=sp?a.m.s:a.m.b;
   pl.t-=sp?4:2;
   say(`${nm(G.turn)}: ¡${sp?a.m.a2:a.m.a1}! Quita ${dmg} HP a ${d.m.n}.`);
-  trigger2dAttack(G.turn===(ME||0), a.m.cl, dmg);
-  d.hp=Math.max(0,d.hp-dmg);G.hitK=k;G.hitN++;ev(sp?'sp':'atk');render();await wait(600);
+
+  // Animar combate en 2D
+  const isP = G.turn === (ME!==null?ME:0);
+  const sprAttacker = $(isP ? 'sprP' : 'sprF');
+  const sprDefender = $(isP ? 'sprF' : 'sprP');
+
+  if(sprAttacker) {
+    sprAttacker.classList.add(isP ? 'anim-atk-p' : 'anim-atk-f');
+    setTimeout(()=>sprAttacker.classList.remove('anim-atk-p','anim-atk-f'),400);
+  }
+  spawnProjectile(isP, a.m.c);
+
+  await wait(220);
+  d.hp=Math.max(0,d.hp-dmg);G.hitK=k;G.hitN++;ev(sp?'sp':'atk');
+
+  if(sprDefender) {
+    sprDefender.classList.add('anim-hit');
+    setTimeout(()=>sprDefender.classList.remove('anim-hit'),400);
+  }
+  popDamage(!isP, dmg);
+
+  render();await wait(600);
   if(d.hp<=0){
     const b=ben(k);say(`${d.m.n} quedó fuera de combate.`);ev('ko');
     if(b.hp>0){G.pl[k].a=1-G.pl[k].a;b.shown=true;ev('swap');say(`${nm(k)} saca a ${b.m.n}.`)}
@@ -890,14 +889,20 @@ function evolve(){
   const pl=G.pl[G.turn], activeMon=cur(), prevName=activeMon.m.n;
   const nextEvo=getNextEvo(activeMon.m);
   if(!nextEvo || pl.t < 2) return;
-  
+
   pl.t -= 2;
   activeMon.m = nextEvo;
   activeMon.max = nextEvo.hp;
   activeMon.hp = nextEvo.hp;
   activeMon.shown = true;
-  
-  trigger2dEvo(G.turn===(ME||0));
+
+  const isP = G.turn === (ME!==null?ME:0);
+  const spr = $(isP ? 'sprP' : 'sprF');
+  if(spr){
+    spr.classList.add('anim-evo');
+    setTimeout(()=>spr.classList.remove('anim-evo'),900);
+  }
+
   ev('evo');
   say(`✨ ¡${nm(G.turn)} usó 2 piedras y evolucionó a ${prevName} en ${nextEvo.n}! (¡Restaurado a ${activeMon.hp} HP!).`);
 }
@@ -1266,6 +1271,7 @@ function tickPub(){
   roomMsg();
   if(srv()>=PUB.exp&&!pendingConn())startOpen();
 }
+
 const pendingConn=()=>NET.conns.some((c,k)=>k&&c&&!NET.hi[k]&&Date.now()-(c._t0||0)<PEND_MS);
 function startOpen(){
   stopPub();
