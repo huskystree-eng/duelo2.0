@@ -62,18 +62,11 @@ b.code{font:1.6rem 'Russo One',sans-serif;color:var(--gold);letter-spacing:.15em
 .names{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}.names label{display:flex;flex-direction:column;gap:4px;font-size:.9rem}.names input{font:1rem system-ui,sans-serif;padding:8px 10px;border-radius:8px;border:2px solid var(--gold);background:#fff;color:var(--ink);width:190px}
 .arena{display:flex;flex-direction:column;gap:10px}
 
-/* ARENA DE BATALLA 2D */
+/* ARENA DE BATALLA 2D CON FONDOS REALES */
 .stage2d-container{position:relative;width:100%;height:320px;border-radius:14px;border:3px solid var(--gold);overflow:hidden;background:#111;box-shadow:0 8px 24px #0009;margin-bottom:8px}
-.stage2d-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:filter .5s, background-image .5s;filter:brightness(0.9)}
-.bg-grass{background:radial-gradient(circle at 50% 30%, #3e8e41, #1e4620 80%)}
-.bg-fire{background:radial-gradient(circle at 50% 30%, #d32f2f, #5d0000 80%)}
-.bg-water{background:radial-gradient(circle at 50% 30%, #0288d1, #002f52 80%)}
-.bg-poison{background:radial-gradient(circle at 50% 30%, #8e24aa, #38004d 80%)}
-.bg-psy{background:radial-gradient(circle at 50% 30%, #d81b60, #540020 80%)}
-.bg-bug{background:radial-gradient(circle at 50% 30%, #afb42b, #3c4000 80%)}
-.bg-default{background:radial-gradient(circle at 50% 30%, #455a64, #102027 80%)}
+.stage2d-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:background-image .6s ease-in-out, filter .5s;filter:brightness(0.92)}
 
-.stage-base{position:absolute;border-radius:50%;background:rgba(0,0,0,0.35);border:2px solid rgba(255,255,255,0.2);box-shadow:0 6px 16px rgba(0,0,0,0.6);transform:scaleY(0.4)}
+.stage-base{position:absolute;border-radius:50%;background:rgba(0,0,0,0.45);border:2px solid rgba(255,255,255,0.25);box-shadow:0 6px 16px rgba(0,0,0,0.7);transform:scaleY(0.4)}
 .base-player{bottom:10px;left:8%;width:180px;height:90px}
 .base-foe{top:60px;right:8%;width:160px;height:80px}
 
@@ -85,7 +78,7 @@ b.code{font:1.6rem 'Russo One',sans-serif;color:var(--gold);letter-spacing:.15em
 .sprite-foe img{transform:scale(1.25)}
 
 /* HUD RPG sobre Escenario */
-.hud-box{position:absolute;background:rgba(20, 16, 28, 0.85);border:2px solid var(--gold);border-radius:10px;padding:6px 10px;width:220px;box-shadow:0 4px 10px #0008;z-index:15;backdrop-filter:blur(4px)}
+.hud-box{position:absolute;background:rgba(20, 16, 28, 0.88);border:2px solid var(--gold);border-radius:10px;padding:6px 10px;width:220px;box-shadow:0 4px 10px #0008;z-index:15;backdrop-filter:blur(4px)}
 .hud-player-box{bottom:12px;right:12px}
 .hud-foe-box{top:12px;left:12px}
 .hud-title{font:0.85rem 'Russo One',sans-serif;color:#fff;display:flex;justify-content:space-between;align-items:center}
@@ -274,7 +267,7 @@ details.rules summary{cursor:pointer;color:var(--gold);font-weight:700;margin-bo
   
   <!-- ARENA DE BATALLA 2D INTERACTIVA -->
   <div class="stage2d-container">
-    <div class="stage2d-bg bg-default" id="stage2dBg"></div>
+    <div class="stage2d-bg" id="stage2dBg"></div>
     <div class="stage-base base-player"></div>
     <div class="stage-base base-foe"></div>
     
@@ -522,6 +515,18 @@ M.forEach(m => MAP_M[m.id] = m);
 const $=id=>document.getElementById(id),rnd=()=>1+Math.floor(Math.random()*6),wait=ms=>new Promise(r=>setTimeout(r,ms));
 const IMG='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/';
 
+// Repositorio de Fondos de Arena de Batalla Reales desde Pokémon Showdown Client
+const SHOWDOWN_BG_BASE = 'https://raw.githubusercontent.com/smogon/pokemon-showdown-client/master/sprites/battle-bgs/';
+const BATTLE_BG_MAP = {
+  grass: SHOWDOWN_BG_BASE + 'grass.png',
+  fire: SHOWDOWN_BG_BASE + 'desert.png',
+  water: SHOWDOWN_BG_BASE + 'water.png',
+  poison: SHOWDOWN_BG_BASE + 'cave.png',
+  psy: SHOWDOWN_BG_BASE + 'space.png',
+  bug: SHOWDOWN_BG_BASE + 'forest.png',
+  default: SHOWDOWN_BG_BASE + 'arena.png'
+};
+
 // Sprites Animados 2D (Showdown / Gen V)
 function getSpriteUrl(id, isBack) {
   const folder = isBack ? 'back/' : '';
@@ -710,7 +715,7 @@ function getNextEvo(m){
   return nextId ? MAP_M[nextId] : null;
 }
 
-/* RENDERIZADO DE LA ARENA 2D VISUAL */
+/* RENDERIZADO DE LA ARENA 2D VISUAL CON FONDOS REALES DE POKÉMON SHOWDOWN */
 function render2dArena(){
   if(!G) return;
   const pIndex = ME !== null ? ME : 0;
@@ -720,9 +725,11 @@ function render2dArena(){
   const pMon = act(pIndex);
   const fMon = act(targetFoeIndex);
 
-  // Escenario por elemento del monstruo activo
+  // Cargar imagen de Fondo Real de Arena según el Elemento del Pokémon
   const bg = $('stage2dBg');
-  bg.className = 'stage2d-bg bg-' + (pMon.m.cl || 'default');
+  const elClass = pMon.m.cl || 'default';
+  const bgUrl = BATTLE_BG_MAP[elClass] || BATTLE_BG_MAP.default;
+  bg.style.backgroundImage = `url('${bgUrl}')`;
 
   // Cargar Sprites 2D Animados
   set2dSprite($('spritePlayerImg'), pMon.m.id, true);
