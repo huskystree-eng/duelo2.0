@@ -437,6 +437,16 @@ body.ing .spr-hud .pn{font-size:.58rem}body.ing .spr-hud .mn{font-size:.52rem}
 body.ing .spr-body{height:66px}
 body.ing .spr-body img{max-height:56px;max-width:80px}
 }
+
+/* ===== BARRA DE PUNTERÍA ===== */
+.aimov{position:fixed;inset:0;z-index:400;background:#000c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;touch-action:none;user-select:none;-webkit-user-select:none;cursor:pointer}
+.aimt{font:1.4rem 'Russo One',sans-serif;color:var(--gold);text-align:center}
+.aimh{font-size:.95rem;text-align:center;opacity:.95}
+.aimtrack{position:relative;width:min(92vw,420px);height:46px;border-radius:23px;background:#2a1b4d;border:3px solid #fff;overflow:hidden}
+.aimzone{position:absolute;top:0;bottom:0;background:linear-gradient(#6f6,#2a9d3a);box-shadow:0 0 14px #4c5}
+.aimmark{position:absolute;top:-2px;bottom:-2px;left:0;width:8px;margin-left:-4px;border-radius:4px;background:#fff;box-shadow:0 0 10px #fff,0 0 0 2px #0008}
+.aimres{font:1.6rem 'Russo One',sans-serif;min-height:1.8em}
+.aimov.ok .aimres{color:#6f6}.aimov.no .aimres{color:#ff6b5a}
 </style>
 </head>
 <body>
@@ -505,7 +515,7 @@ body.ing .spr-body img{max-height:56px;max-width:80px}
   <div class="names" id="names"></div>
   <h2 id="pt"></h2>
   <details class="rules"><summary>Cómo se juega (tocá para ver)</summary><p>Sobre la mesa hay figuritas boca abajo y nadie sabe cuáles son. Cada jugador toma 2 a ciegas. Después cada uno ve solo sus propias figuritas y elige con cuál arrancar. La otra queda oculta para el rival hasta que entre al combate.<br>
-  <b>Cómo se juega:</b> en tu turno tirás el dado y sumás ese número a tus puntos. Cada 6 puntos podés canjearlos por una piedra de energía, y lo que sobra se guarda para el próximo turno. Si sacás un 6 directo, tirás de nuevo (hasta 2 veces extra). Cada monstruo tiene su propio costo según su poder: los más débiles gastan menos (ataque básico 1 piedra y fuerte 3), los intermedios 2 y 4, y los más poderosos 3 y 4. Los ataques de más de 50 puntos (los de nivel 3 y los legendarios) se definen con una moneda 🪙: si sale cruz, fallan y las piedras se pierden. Cada tipo tiene debilidades: si atacás a un monstruo débil a tu tipo, pegás ×1,5 (×2 si tiene doble debilidad). <b>Ítems 🎒:</b> cada jugador empieza con un ítem de un solo uso que puede usar gratis en su turno: 🧪 Poción (cura 25 HP), ⚡ Doble energía (+2 piedras, máximo 4) o 🛡 Escudo (el próximo golpe que recibas hace la mitad; se pierde si no te pegan antes de tu próximo turno). <b>Clima 🌦:</b> cada tanto cambia el clima y potencia un tipo (×1,25) y debilita otro (×0,8): ☀ Sol (Fuego ▲ Agua ▼), 🌧 Lluvia (Agua ▲ Fuego ▼), ⛈ Tormenta (Eléctrico ▲), 🏜 Arena (Roca, Tierra y Acero ▲), ❄ Nieve (Hielo ▲ Planta ▼). <b>Evolucionar:</b> podés pagar 2 piedras para hacer evolucionar a tu monstruo activo si posee una fase siguiente, aumentando sus HP y su poder de ataque. En tu turno también podés cambiar de monstruo: el que va al banco recupera entre 10 y 20 HP. Quedás eliminado cuando tus dos monstruos caen. <b>3 o 4 jugadores:</b> todos contra todos, gana el último en pie; antes de atacar elegí al rival que querés pegarle (botones "Atacar a" o tocando su monstruo). <b>2 contra 2:</b> los equipos son Jugador 1 y 3 contra Jugador 2 y 4; gana el equipo que deja sin monstruos al otro. <b>Tipos:</b> cada monstruo muestra sus tipos sobre su cabeza; tu ataque usa el tipo principal y un ▲ marca los rivales a los que les pegás más fuerte. <b>Veneno ☠:</b> cuando un monstruo 100% Veneno impacta, envenena al rival (los que son Veneno solo a medias no envenenan, y todos los de tipo Veneno son inmunes): pierde 5 HP al empezar cada turno de quien lo envenenó, hasta que ese monstruo caiga fuera de combate o su dueño quede eliminado. <b>Estados:</b> los ataques de Fuego pueden quemar (pierde 4 HP en sus turnos), los Eléctricos paralizar (50% de no poder atacar), los de Hielo congelar (pierde el turno) y los Psíquicos y Fantasma dormir (no puede atacar hasta despertar). Cambiar de monstruo cura el estado.</p></details>
+  <b>Cómo se juega:</b> en tu turno tirás el dado y sumás ese número a tus puntos. Cada 6 puntos podés canjearlos por una piedra de energía, y lo que sobra se guarda para el próximo turno. Si sacás un 6 directo, tirás de nuevo (hasta 2 veces extra). Cada monstruo tiene su propio costo según su poder: los más débiles gastan menos (ataque básico 1 piedra y fuerte 3), los intermedios 2 y 4, y los más poderosos 3 y 4. Los ataques de más de 50 puntos (los de nivel 3 y los legendarios) se definen con una barra de puntería 🎯: tocá cuando el marcador esté en la zona verde; si fallás, el ataque no pega y las piedras se pierden. Cuanto más fuerte el ataque, más chica la zona y más rápido el marcador. Cada tipo tiene debilidades: si atacás a un monstruo débil a tu tipo, pegás ×1,5 (×2 si tiene doble debilidad). <b>Ítems 🎒:</b> cada jugador empieza con un ítem de un solo uso que puede usar gratis en su turno: 🧪 Poción (cura 25 HP), ⚡ Doble energía (+2 piedras, máximo 4) o 🛡 Escudo (el próximo golpe que recibas hace la mitad; se pierde si no te pegan antes de tu próximo turno). <b>Clima 🌦:</b> cada tanto cambia el clima y potencia un tipo (×1,25) y debilita otro (×0,8): ☀ Sol (Fuego ▲ Agua ▼), 🌧 Lluvia (Agua ▲ Fuego ▼), ⛈ Tormenta (Eléctrico ▲), 🏜 Arena (Roca, Tierra y Acero ▲), ❄ Nieve (Hielo ▲ Planta ▼). <b>Evolucionar:</b> podés pagar 2 piedras para hacer evolucionar a tu monstruo activo si posee una fase siguiente, aumentando sus HP y su poder de ataque. En tu turno también podés cambiar de monstruo: el que va al banco recupera entre 10 y 20 HP. Quedás eliminado cuando tus dos monstruos caen. <b>3 o 4 jugadores:</b> todos contra todos, gana el último en pie; antes de atacar elegí al rival que querés pegarle (botones "Atacar a" o tocando su monstruo). <b>2 contra 2:</b> los equipos son Jugador 1 y 3 contra Jugador 2 y 4; gana el equipo que deja sin monstruos al otro. <b>Tipos:</b> cada monstruo muestra sus tipos sobre su cabeza; tu ataque usa el tipo principal y un ▲ marca los rivales a los que les pegás más fuerte. <b>Veneno ☠:</b> cuando un monstruo 100% Veneno impacta, envenena al rival (los que son Veneno solo a medias no envenenan, y todos los de tipo Veneno son inmunes): pierde 5 HP al empezar cada turno de quien lo envenenó, hasta que ese monstruo caiga fuera de combate o su dueño quede eliminado. <b>Estados:</b> los ataques de Fuego pueden quemar (pierde 4 HP en sus turnos), los Eléctricos paralizar (50% de no poder atacar), los de Hielo congelar (pierde el turno) y los Psíquicos y Fantasma dormir (no puede atacar hasta despertar). Cambiar de monstruo cura el estado.</p></details>
   <div class="grid" id="grid"></div>
 </section>
 
@@ -1317,15 +1327,15 @@ function popText(k,text,cls){
 function fxCoin(ok){
   const st=$('stage2d');if(!st)return;
   const c=document.createElement('div');c.className='fxcoin';c.textContent='?';st.appendChild(c);
-  const show=()=>{c.textContent=ok?'★':'✖';c.classList.add(ok?'ok':'no');const l=document.createElement('small');l.textContent=ok?'CARA: ¡ACIERTA!':'CRUZ: FALLA';c.appendChild(l)};
+  const show=()=>{c.textContent=ok?'★':'✖';c.classList.add(ok?'ok':'no');const l=document.createElement('small');l.textContent=ok?'¡PUNTERÍA CERTERA!':'¡FALLÓ LA PUNTERÍA!';c.appendChild(l)};
   if(c.animate&&!NOANIM){
     c.animate([
       {transform:'translate(-50%,-50%) translateY(50px) rotateY(0deg) scale(.6)',opacity:0},
       {transform:'translate(-50%,-50%) translateY(-60px) rotateY(900deg) scale(1.3)',opacity:1,offset:.5},
       {transform:'translate(-50%,-50%) translateY(0px) rotateY(1800deg) scale(1)',opacity:1}
-    ],{duration:900,easing:'ease-out',fill:'forwards'});
-    setTimeout(show,900);
-    setTimeout(()=>c.remove(),1450);
+    ],{duration:450,easing:'ease-out',fill:'forwards'});
+    setTimeout(show,450);
+    setTimeout(()=>c.remove(),1000);
   }else{show();setTimeout(()=>c.remove(),1200)}
 }
 
@@ -1450,7 +1460,7 @@ function render(){
   const st1=c=>{const f=c-myP.t;return acting&&G.noAtk?'🚫 no podés atacar este turno':f>0?'✖ '+(f>1?'te faltan '+f+' piedras':'te falta 1 piedra'):!acting?'✔ listo para tu turno':!G.rolled?'🎲 tirá el dado primero':'✔ podés usarlo'};
   const pc=n=>n>1?'piedras':'piedra';
   $('atkBtn').innerHTML=`${esc(my.m.a1)} · ${my.m.b} HP (${my.m.cb} ${pc(my.m.cb)})<span class="tx">${esc(tx)}${et}</span><small>${st1(my.m.cb)}</small>`;
-  $('spBtn').innerHTML=`${esc(my.m.a2)} · ${my.m.s} HP (${my.m.cs} piedras${my.m.flip?' · 🪙 tira moneda':''})<span class="tx">${esc(tx)}${et}</span><small>${st1(my.m.cs)}</small>`;
+  $('spBtn').innerHTML=`${esc(my.m.a2)} · ${my.m.s} HP (${my.m.cs} piedras${my.m.flip?' · 🎯 puntería':''})<span class="tx">${esc(tx)}${et}</span><small>${st1(my.m.cs)}</small>`;
   $('evoBtn').textContent=nextEvo?`Evolucionar a ${nextEvo.n} (2 piedras)`:`Sin evolución disponible`;
   renderTypeInfo(my,G.over?[]:foes(ME!==null?ME:G.turn));
   $('rollBtn').textContent=G.rolled&&G.bonus?'¡Tirar de nuevo!':'Tirar dado';
@@ -1500,15 +1510,15 @@ async function roll(){
   G.rolled=true;render();await wait(450);
 }
 
-async function hit(kind,t){
+async function hit(kind,t,aim){
   const a=cur(),pl=G.pl[G.turn],f=foes(G.turn),k=f.includes(t)?t:f[0],d=act(k),sp=kind==='sp',base=sp?a.m.s:a.m.b;
   const mult=typeMult(a.m,d.m),wm=wxMult(a.m),crit=!!G.crit;let dmg=Math.max(1,Math.round(base*mult*wm*(crit?1.25:1)*(.9+Math.random()*.2)));
   pl.t-=sp?a.m.cs:a.m.cb;
   // Ataques de más de 50 puntos (legendarios y evoluciones finales): se define con una moneda.
   if(base>50){
-    const ok=Math.random()<.5;
-    say(`${nm(G.turn)} usa ${sp?a.m.a2:a.m.a1} y tira la moneda… ${ok?'¡Cara! El ataque acierta.':'¡Cruz! El ataque falla.'}`);
-    ev('coin',{ok:ok?1:0});render();await wait(1000);
+    const zn=aimZone(base),okAim=typeof aim==='number'&&isFinite(aim)&&aim>=0&&aim<=1,ok=okAim?Math.abs(aim-.5)<=zn/2:Math.random()<.5;
+    say(`${nm(G.turn)} usa ${sp?a.m.a2:a.m.a1} y apunta… ${ok?'🎯 ¡Puntería certera! El ataque acierta.':'💨 ¡Falló la puntería! El ataque no da en el blanco.'}`);
+    ev('coin',{ok:ok?1:0});render();await wait(750);
     if(!ok){
       ev('proj',{f:G.turn,to:k,cl:a.m.cl,ty:fxKind(a.m.el)});render();await wait(420);
       ev('miss',{to:k});say(`${d.m.n} de ${nm(k)} esquiva el golpe.`);render();await wait(420);
@@ -1620,8 +1630,8 @@ const doRoll=async()=>{G.busy=true;render();await roll();
   if(noActions()){await wait(250);endTurn()}else{G.busy=false;render()}};
 const doStone=()=>{const pl=G.pl[G.turn];pl.pts-=6;pl.t++;ev('stone');say(`${nm(G.turn)} canjea 6 puntos por una piedra de energía (le sobran ${pl.pts} puntos).`);render()};
 const doEvo=()=>{evolve();render();};
-const doAtk=async t=>{G.busy=true;render();await hit('at',t);endTurn()};
-const doSp=async t=>{G.busy=true;render();await hit('sp',t);endTurn()};
+const doAtk=async(t,x)=>{G.busy=true;render();await hit('at',t,x);endTurn()};
+const doSp=async(t,x)=>{G.busy=true;render();await hit('sp',t,x);endTurn()};
 const doSwap=async()=>{G.busy=true;swap();render();await wait(450);endTurn()};
 const doKeep=()=>{say(`${nm(G.turn)} pasa el turno.`);endTurn()};
 const doItem=()=>{
@@ -1633,7 +1643,7 @@ const doItem=()=>{
   ev('item',{k:G.turn,i:it});render();
 };
 
-function perform(a,i,who){
+function perform(a,i,who,x){
   if(a==='pick'){
     if(phase!=='pick')return;
     const k=nextPick(),c=P.pool[i];
@@ -1655,16 +1665,44 @@ function perform(a,i,who){
   if(a==='rematch'){if(phase==='game'&&G&&G.over&&!G.left&&!ADV){startGame();say('🔁 ¡Revancha con las mismas figuritas!');render()}return}
   if(a==='again'){if(phase==='game'&&G.over){if(ADV)NAMES[1]=BOSS[ADV.s];newPick()}return}
   if(!can(a,who))return;
-  ({roll:doRoll,stone:doStone,evo:doEvo,atk:doAtk,sp:doSp,swap:doSwap,keep:doKeep,item:doItem})[a](i);
+  ({roll:doRoll,stone:doStone,evo:doEvo,atk:doAtk,sp:doSp,swap:doSwap,keep:doKeep,item:doItem})[a](i,x);
 }
 
-function dispatch(a,i){
-  if(NET.role==='guest'){if(NET.conn&&NET.conn.open)NET.conn.send(JSON.stringify({t:'a',a,i}));return}
-  perform(a,i,NET.role==='host'||BOT?0:null);
+function dispatch(a,i,x){
+  if(NET.role==='guest'){if(NET.conn&&NET.conn.open)NET.conn.send(JSON.stringify({t:'a',a,i,x}));return}
+  perform(a,i,NET.role==='host'||BOT?0:null,x);
 }
 
 $('grid').onclick=e=>{const b=e.target.closest('button');if(b&&!b.disabled){play('pick');dispatch('pick',+b.dataset.i)}};
-['roll','stone','evo','atk','sp','swap','keep','item'].forEach(a=>$(a+'Btn').onclick=()=>dispatch(a,a==='atk'||a==='sp'?tgt():undefined));
+const aimZone=b=>Math.max(.2,Math.min(.4,.4-(b-50)*.004));
+let AIMING=false;
+const needsAim=a=>{const m=cur().m;return(a==='sp'?m.s:m.b)>50};
+function startAim(a,t){
+  if(AIMING)return;AIMING=true;
+  const m=cur().m,base=a==='sp'?m.s:m.b,zn=aimZone(base),T=Math.max(.55,.9-(base-50)*.005)*1000;
+  const o=document.createElement('div');o.className='aimov';
+  o.innerHTML=`<div class="aimt">🎯 ${esc(a==='sp'?m.a2:m.a1)}</div><div class="aimh">¡Tocá la pantalla cuando el marcador esté en la zona verde!</div><div class="aimtrack"><i class="aimzone" style="left:${(.5-zn/2)*100}%;width:${zn*100}%"></i><b class="aimmark"></b></div><div class="aimres"></div>`;
+  document.body.appendChild(o);
+  const mk=o.querySelector('.aimmark'),res=o.querySelector('.aimres'),t0=performance.now()+400;
+  const pos=now=>{const u=(Math.max(0,now-t0)/T)%2;return u<1?u:2-u};
+  let done=false,raf=0,to=0;
+  const frame=now=>{mk.style.left=(pos(now)*100)+'%';raf=requestAnimationFrame(frame)};
+  raf=requestAnimationFrame(frame);
+  const stop=()=>{
+    if(done)return;done=true;cancelAnimationFrame(raf);clearTimeout(to);
+    const p=pos(performance.now()),ok=Math.abs(p-.5)<=zn/2;
+    mk.style.left=(p*100)+'%';o.classList.add(ok?'ok':'no');res.textContent=ok?'🎯 ¡Perfecto!':'💨 Fallaste';
+    try{play(ok?'six':'miss')}catch(e){}
+    setTimeout(()=>{o.remove();AIMING=false;if(G&&phase==='game'&&can(a,ME))dispatch(a,t,p)},550);
+  };
+  to=setTimeout(stop,4500);
+  o.addEventListener('pointerdown',e=>{e.preventDefault();if(performance.now()>=t0)stop()});
+}
+['roll','stone','evo','atk','sp','swap','keep','item'].forEach(a=>$(a+'Btn').onclick=()=>{
+  if(AIMING)return;
+  const at=a==='atk'||a==='sp',t=at?tgt():undefined;
+  if(at&&can(a,ME)&&needsAim(a))startAim(a,t);else dispatch(a,t);
+});
 $('rv').onclick=e=>{
   if(e.target.closest('#peekBtn')){rvPeek=true;rvFresh=true;reveal();return}
   const l=e.target.closest('[data-lead]');if(l){play('pick');dispatch('lead',+l.dataset.lead);return}
@@ -2079,7 +2117,7 @@ function onHostMsg(raw,k){
   else if(!NET.hi[k])return;
   else if(d.t==='chat'){const t=String(d.text||'').slice(0,200);addChat(false,NAMES[k],t);bc({t:'chat',name:NAMES[k],text:t},k)}
   else if(d.t==='emo'){const e=+d.e;if(!(e>=0&&e<EMO.length)||Date.now()-(EMOT[k]||0)<1000)return;EMOT[k]=Date.now();showEmote(k,e);bc({t:'emo',k,e},k)}
-  else if(d.t==='a'&&typeof d.a==='string')perform(d.a,d.i,k);
+  else if(d.t==='a'&&typeof d.a==='string')perform(d.a,d.i,k,d.x);
 }
 function hostRoom(open){
   ABS=new Set();
