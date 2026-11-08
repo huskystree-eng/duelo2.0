@@ -347,6 +347,32 @@ main{min-width:0}
 @keyframes minePulse{0%,100%{text-shadow:0 0 0 transparent}50%{text-shadow:0 0 14px #ffd23c,0 0 4px #fff}}
 .banner.mine{animation:minePulse 1.1s ease-in-out 4}
 @media (prefers-reduced-motion:reduce){.spr.st-poison .spr-body:before,.spr.st-burn .spr-body:before,.spr.st-para .spr-body:before,.spr.st-sleep .spr-body:after,.banner.mine{animation:none}}
+/* ---- Pistas de tipo, emotes, ítems, clima ---- */
+.side .wk{font-size:.66rem;margin-top:3px;line-height:1.5;opacity:.95}
+.side .wk .tyc{font-size:.6rem;padding:1px 5px;margin:0 2px 0 0}
+.side .eff{font-size:.7rem;margin-top:3px;font-family:'Russo One',sans-serif}
+.side .eff.e1{color:#ffd23c}.side .eff.e2{color:#ff9a1a}.side .eff.e0{opacity:.7;font-family:inherit}
+.emobar.hide{display:none}
+.emobar{display:flex;gap:6px;justify-content:center;margin:6px 0;flex-wrap:wrap}
+.emobar button{font-size:1.35rem;line-height:1;padding:6px 9px;border-radius:12px;border:2px solid #fff3;background:#ffffff14;cursor:pointer}
+.emobar button:active{transform:scale(.9)}
+.emote{position:absolute;z-index:230;pointer-events:none;font-size:2.2rem;filter:drop-shadow(0 2px 3px #000a);transform:translate(-50%,-100%)}
+.b.it{background:linear-gradient(#27b9a6,#12806f);color:#fff}
+.side .itm{font-size:.7rem;margin-left:6px;opacity:.9}
+#wxBadge{width:fit-content;max-width:100%;margin:6px auto 0;background:#000a;color:#fff;font:.74rem 'Russo One',sans-serif;padding:4px 12px;border-radius:12px;text-align:center}
+#wxFx{position:absolute;inset:0;z-index:120;pointer-events:none;overflow:hidden;border-radius:inherit}
+#wxFx.wx-sol{background:radial-gradient(circle at 88% 8%,#fff6b0cc,#ffcc4455 18%,transparent 48%),linear-gradient(#ffb60014,#ff7a0012)}
+#wxFx.wx-lluvia,#wxFx.wx-tormenta{background-image:linear-gradient(104deg,transparent 46%,#cfe6ffaa 50%,transparent 54%),linear-gradient(#10244a40,#10244a40);background-size:16px 46px,100% 100%;animation:wxrain .5s linear infinite}
+#wxFx.wx-tormenta{animation:wxrain .35s linear infinite,wxflash 4.5s infinite}
+#wxFx.wx-arena{background:linear-gradient(#d8a24a33,#b8782a40);background-image:radial-gradient(circle,#f1d18a99 1px,transparent 2px);background-size:22px 18px;animation:wxsand 1.1s linear infinite}
+#wxFx.wx-nieve{background-image:radial-gradient(circle,#fffffff0 1.6px,transparent 2.4px),radial-gradient(circle,#ffffffb0 1px,transparent 2px),linear-gradient(#dff3ff22,#dff3ff22);background-size:34px 30px,21px 24px,100% 100%;animation:wxsnow 3s linear infinite}
+@keyframes wxrain{to{background-position:-16px 46px,0 0}}
+@keyframes wxsand{to{background-position:-60px 20px,0 0}}
+@keyframes wxsnow{to{background-position:14px 30px,-9px 24px,0 0}}
+@keyframes wxflash{0%,92%,100%{box-shadow:none}94%{box-shadow:inset 0 0 0 999px #ffffffaa}96%{box-shadow:none}97%{box-shadow:inset 0 0 0 999px #ffffff77}}
+@media (prefers-reduced-motion:reduce){#wxFx{animation:none!important}}
+#musBtn{position:static}
+#musBtn.off{opacity:.45}
 </style>
 </head>
 <body>
@@ -354,6 +380,7 @@ main{min-width:0}
 <header class="top"><h1>Duelo de Figuritas</h1>
 <button class="b sm hide" id="menuBtn">⬅ Menú</button>
 <button class="b sm hide" id="chatTog" aria-expanded="false">💬 Chat<span class="badge hide" id="chatBadge">0</span></button>
+<button class="b sm" id="musBtn" aria-label="Música">🎵</button>
 <button class="b sm" id="muteBtn" aria-label="Silenciar sonidos">🔊</button></header>
 
 <section id="lobby">
@@ -361,6 +388,8 @@ main{min-width:0}
     <label class="fld">Tu nombre<input id="myname" maxlength="14" placeholder="Tu nombre" autocomplete="off" list="known"><datalist id="known"></datalist></label>
     <label class="fld">Tiempo por turno<select id="limit"><option value="0">Sin límite</option><option value="20">20 segundos</option><option value="30">30 segundos</option><option value="45" selected>45 segundos</option><option value="60">60 segundos</option></select></label>
     <label class="fld">Canje de piedras<select id="auto"><option value="1" selected>Automático</option><option value="0">Manual</option></select></label>
+    <label class="fld">Ítems de apoyo<select id="items"><option value="1" selected>Con ítems</option><option value="0">Sin ítems</option></select></label>
+    <label class="fld">Clima<select id="wxsel"><option value="1" selected>Con clima</option><option value="0">Sin clima</option></select></label>
     <label class="fld">Formato (en "Jugar acá" y "Online")<select id="fmt"><option value="ffa2">1 contra 1</option><option value="ffa3">Todos contra todos: 3 jugadores</option><option value="ffa4">Todos contra todos: 4 jugadores</option><option value="team">2 contra 2 (equipos)</option></select></label>
     <p class="rules">El nombre se usa online y contra la compu. El formato y el tiempo valen online (los elige quien crea la sala) y en pantalla compartida. Contra la compu siempre es 1 contra 1. Si se acaba, perdés el turno.</p>
   </div>
@@ -412,7 +441,7 @@ main{min-width:0}
   <div class="names" id="names"></div>
   <h2 id="pt"></h2>
   <details class="rules"><summary>Cómo se juega (tocá para ver)</summary><p>Sobre la mesa hay figuritas boca abajo y nadie sabe cuáles son. Cada jugador toma 2 a ciegas. Después cada uno ve solo sus propias figuritas y elige con cuál arrancar. La otra queda oculta para el rival hasta que entre al combate.<br>
-  <b>Cómo se juega:</b> en tu turno tirás el dado y sumás ese número a tus puntos. Cada 6 puntos podés canjearlos por una piedra de energía, y lo que sobra se guarda para el próximo turno. Si sacás un 6 directo, tirás de nuevo (hasta 2 veces extra). Cada monstruo tiene su propio costo según su poder: los más débiles gastan menos (ataque básico 1 piedra y fuerte 3), los intermedios 2 y 4, y los más poderosos 3 y 4. Los ataques de más de 50 puntos (los de nivel 3 y los legendarios) se definen con una moneda 🪙: si sale cruz, fallan y las piedras se pierden. Cada tipo tiene debilidades: si atacás a un monstruo débil a tu tipo, pegás ×1,5 (×2 si tiene doble debilidad). <b>Evolucionar:</b> podés pagar 2 piedras para hacer evolucionar a tu monstruo activo si posee una fase siguiente, aumentando sus HP y su poder de ataque. En tu turno también podés cambiar de monstruo: el que va al banco recupera entre 10 y 20 HP. Quedás eliminado cuando tus dos monstruos caen. <b>3 o 4 jugadores:</b> todos contra todos, gana el último en pie; antes de atacar elegí al rival que querés pegarle (botones "Atacar a" o tocando su monstruo). <b>2 contra 2:</b> los equipos son Jugador 1 y 3 contra Jugador 2 y 4; gana el equipo que deja sin monstruos al otro. <b>Tipos:</b> cada monstruo muestra sus tipos sobre su cabeza; tu ataque usa el tipo principal y un ▲ marca los rivales a los que les pegás más fuerte. <b>Veneno ☠:</b> cuando un monstruo de tipo Veneno impacta, envenena al rival: pierde 5 HP al empezar cada turno de quien lo envenenó, hasta que ese monstruo caiga fuera de combate o su dueño quede eliminado. <b>Estados:</b> los ataques de Fuego pueden quemar (pierde 4 HP en sus turnos), los Eléctricos paralizar (50% de no poder atacar), los de Hielo congelar (pierde el turno) y los Psíquicos y Fantasma dormir (no puede atacar hasta despertar). Cambiar de monstruo cura el estado.</p></details>
+  <b>Cómo se juega:</b> en tu turno tirás el dado y sumás ese número a tus puntos. Cada 6 puntos podés canjearlos por una piedra de energía, y lo que sobra se guarda para el próximo turno. Si sacás un 6 directo, tirás de nuevo (hasta 2 veces extra). Cada monstruo tiene su propio costo según su poder: los más débiles gastan menos (ataque básico 1 piedra y fuerte 3), los intermedios 2 y 4, y los más poderosos 3 y 4. Los ataques de más de 50 puntos (los de nivel 3 y los legendarios) se definen con una moneda 🪙: si sale cruz, fallan y las piedras se pierden. Cada tipo tiene debilidades: si atacás a un monstruo débil a tu tipo, pegás ×1,5 (×2 si tiene doble debilidad). <b>Ítems 🎒:</b> cada jugador empieza con un ítem de un solo uso que puede usar gratis en su turno: 🧪 Poción (cura 25 HP), ⚡ Doble energía (+2 piedras, máximo 4) o 🛡 Escudo (el próximo golpe que recibas hace la mitad; se pierde si no te pegan antes de tu próximo turno). <b>Clima 🌦:</b> cada tanto cambia el clima y potencia un tipo (×1,25) y debilita otro (×0,8): ☀ Sol (Fuego ▲ Agua ▼), 🌧 Lluvia (Agua ▲ Fuego ▼), ⛈ Tormenta (Eléctrico ▲), 🏜 Arena (Roca, Tierra y Acero ▲), ❄ Nieve (Hielo ▲ Planta ▼). <b>Evolucionar:</b> podés pagar 2 piedras para hacer evolucionar a tu monstruo activo si posee una fase siguiente, aumentando sus HP y su poder de ataque. En tu turno también podés cambiar de monstruo: el que va al banco recupera entre 10 y 20 HP. Quedás eliminado cuando tus dos monstruos caen. <b>3 o 4 jugadores:</b> todos contra todos, gana el último en pie; antes de atacar elegí al rival que querés pegarle (botones "Atacar a" o tocando su monstruo). <b>2 contra 2:</b> los equipos son Jugador 1 y 3 contra Jugador 2 y 4; gana el equipo que deja sin monstruos al otro. <b>Tipos:</b> cada monstruo muestra sus tipos sobre su cabeza; tu ataque usa el tipo principal y un ▲ marca los rivales a los que les pegás más fuerte. <b>Veneno ☠:</b> cuando un monstruo 100% Veneno impacta, envenena al rival (los que son Veneno solo a medias no envenenan, y todos los de tipo Veneno son inmunes): pierde 5 HP al empezar cada turno de quien lo envenenó, hasta que ese monstruo caiga fuera de combate o su dueño quede eliminado. <b>Estados:</b> los ataques de Fuego pueden quemar (pierde 4 HP en sus turnos), los Eléctricos paralizar (50% de no poder atacar), los de Hielo congelar (pierde el turno) y los Psíquicos y Fantasma dormir (no puede atacar hasta despertar). Cambiar de monstruo cura el estado.</p></details>
   <div class="grid" id="grid"></div>
 </section>
 
@@ -427,8 +456,10 @@ main{min-width:0}
       <div id="stage2d">
         <div id="stage2dBg"></div>
         <div id="stageSprites"></div>
+        <div id="wxFx"></div>
       </div>
     </div>
+    <div id="wxBadge" class="hide"></div>
     <div id="sides"></div>
     <div class="banner" id="banner"></div>
     <div id="tgtBar" class="tgtbar hide"></div>
@@ -440,10 +471,13 @@ main{min-width:0}
       <button class="b" id="atkBtn"></button>
       <button class="b sp" id="spBtn"></button>
       <button class="b" id="swapBtn">Cambiar monstruo (el que sale recupera 10 a 20 HP)</button>
+      <button class="b it hide" id="itemBtn"></button>
       <button class="b" id="keepBtn">Terminar turno</button>
     </div>
+    <div class="emobar hide" id="emoBar" aria-label="Emotes"></div>
     <details id="typeInfo" class="tyinfo"><summary id="tySum"></summary><div id="tyBody"></div></details>
     <div class="log" id="log" aria-live="polite"></div>
+    <button class="b hide" id="rematch">🔁 Revancha (mismas figuritas)</button>
     <button class="b hide" id="again">Nueva partida</button>
   </div>
 </section>
@@ -769,11 +803,11 @@ function advStep(won){
   if(won){ADV.s++;setBest(ADV.s);if(ADV.s>=BOSS.length){say('🏆 ¡Completaste la aventura!');ADV.lbl='Jugar la aventura de nuevo';ADV.s=0}else{say(`Siguiente rival: ${esc(BOSS[ADV.s])}.`);ADV.lbl='Siguiente combate ▶'}}
   else{setBest(ADV.s);say('Perdiste la aventura. Podés reintentar desde el primer combate.');ADV.lbl='Reintentar aventura';ADV.s=0}
 }
-function show(id){['lobby','pick','reveal','game'].forEach(i=>$(i).classList.toggle('hide',i!==id));$('menuBtn').classList.toggle('hide',id==='lobby');if(id==='lobby'){renderRank();pollRooms();warmPeer();startStream();startLC()}else stopLC();chatVis()}
+function show(id){if(id!=='game')musicStop();['lobby','pick','reveal','game'].forEach(i=>$(i).classList.toggle('hide',i!==id));$('menuBtn').classList.toggle('hide',id==='lobby');if(id==='lobby'){renderRank();pollRooms();warmPeer();startStream();startLC()}else stopLC();chatVis()}
 function viewFor(w){
   return{phase,names:NAMES,team:TEAM,
     P:P&&{pool:P.pool.map(c=>({o:c.o,mi:phase!=='pick'&&c.o===w?c.mi:-1})),lead:P.lead.map((l,k)=>k===w?l:0),ready:P.ready},
-    G:G&&{...G,tleft:Math.max(0,((G.turnEnd||0)-Date.now())/1000),pl:G.pl.map((p,k)=>({...p,mons:p.mons.map(mm=>k===w||mm.shown?mm:{hidden:true})}))}};
+    G:G&&{...G,tleft:Math.max(0,((G.turnEnd||0)-Date.now())/1000),pl:G.pl.map((p,k)=>({...p,item:k===w||!p.item?p.item:'?',mons:p.mons.map(mm=>k===w||mm.shown?mm:{hidden:true})}))}};
 }
 function sync(){if(NET.role==='host')NET.conns.forEach((c,k)=>{if(k&&c&&c.open&&NET.hi[k])c.send(JSON.stringify({t:'s',...viewFor(k)}))})}
 
@@ -800,7 +834,60 @@ const SFX={
  evo(){[440,554,659,880,1108].forEach((f,i)=>tone(f,i*.08,.2,'triangle',.15))},
  coin(){[600,800,1000,1300,1000,1300].forEach((f,i)=>tone(f,i*.1,.12,'triangle',.1))}
 };
+SFX.item=()=>{[660,880,1100].forEach((f,i)=>tone(f,i*.07,.18,'sine',.12))};
+SFX.wx=()=>{noise(0,.7,.12,700,'lowpass');tone(330,0,.5,'sine',.07,440)};
+SFX.emo=()=>{tone(1000,0,.06,'sine',.07);tone(1500,.05,.08,'sine',.07)};
+// Un sonido distinto para cada tipo de ataque (big = ataque fuerte)
+const SFXT={
+ fire(b){noise(0,.35*b,.4,900,'lowpass');tone(300,0,.3*b,'sawtooth',.12,90)},
+ water(b){noise(0,.3*b,.3,2600,'highpass');[500,700,900].forEach((f,i)=>tone(f,i*.06,.1,'sine',.1,f*1.6))},
+ elec(b){for(let i=0;i<5;i++)tone(900+Math.random()*1400,i*.04,.05,'square',.12*Math.min(b,1.3));noise(0,.2,.3,4000,'highpass')},
+ grass(b){noise(0,.22*b,.3,3200,'highpass');tone(520,0,.18,'triangle',.1,780);tone(780,.1,.15,'triangle',.08,520)},
+ poison(b){tone(150,0,.4*b,'sine',.2,90);tone(210,.05,.35*b,'sine',.14,120);noise(.05,.3,.15,500,'bandpass')},
+ psy(b){tone(500,0,.5*b,'sine',.16,1300);tone(504,0,.5*b,'sine',.12,1310);tone(1300,.35,.25,'triangle',.08,400)},
+ bug(b){for(let i=0;i<6;i++)tone(240+(i%2)*40,i*.05,.06,'sawtooth',.1)},
+ ice(b){[1568,1976,2349,2637].forEach((f,i)=>tone(f,i*.045,.2,'triangle',.08));noise(0,.15,.18,6000,'highpass')},
+ fight(b){tone(110,0,.22*b,'sine',.35,50);noise(0,.1,.45,1200)},
+ rock(b){tone(70,0,.4*b,'square',.2,35);noise(0,.35*b,.5,300,'lowpass')},
+ dark(b){tone(260,0,.5*b,'sawtooth',.14,70);tone(130,.1,.45*b,'sine',.14,50)},
+ fairy(b){[1047,1319,1568,2093].forEach((f,i)=>tone(f,i*.07,.22,'sine',.09))},
+ steel(b){tone(900,0,.25*b,'square',.1,860);tone(1350,0,.2*b,'square',.07);noise(0,.08,.3,5000,'highpass')}
+};
+const playHit=(t,ty)=>{if(ty&&SFXT[ty])SFXT[ty](t==='sp'?1.5:1);else play(t)};
 const play=t=>{if(SFX[t])SFX[t]()};
+
+// Música ambiental (sintetizada, en bucle, bajita). Se activa durante la partida.
+let MUS_ON=true;try{MUS_ON=localStorage.getItem('music')!=='0'}catch(e){}
+const MUS={timer:null,gain:null,next:0,step:0};
+const mf=n=>440*Math.pow(2,(n-69)/12);
+const MBASS=[45,41,48,43],MARP=[[57,60,64,60],[53,57,60,57],[60,64,67,64],[55,59,62,59]],MLEAD=[[76,0,72,0,76,0,79,0],[77,0,74,0,77,0,81,0],[79,0,76,0,72,0,76,0],[74,0,71,0,74,0,79,0]];
+function mtone(f,T,d,type,v,f2){
+  const c=AC;if(!c||!MUS.gain)return;
+  const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(f,T);if(f2)o.frequency.exponentialRampToValueAtTime(f2,T+d);
+  g.gain.setValueAtTime(.0001,T);g.gain.linearRampToValueAtTime(v,T+.015);g.gain.exponentialRampToValueAtTime(.0001,T+d);
+  o.connect(g);g.connect(MUS.gain);o.start(T);o.stop(T+d+.03);
+}
+function musicStep(i,T){
+  const bar=Math.floor(i/8)%4,pos=i%8;
+  if(pos===0||pos===4){mtone(mf(MBASS[bar]),T,.42,'triangle',.11);mtone(120,T,.14,'sine',.12,45)}
+  mtone(mf(MARP[bar][pos%4]),T,.2,'triangle',.035);
+  const l=MLEAD[bar][pos];if(l)mtone(mf(l),T,.34,'sine',.03);
+}
+function musicSched(){
+  const c=AC;if(!c||!MUS.gain)return;
+  if(MUS.next<c.currentTime-.15)MUS.next=c.currentTime+.05;
+  while(MUS.next<c.currentTime+.7){musicStep(MUS.step,MUS.next);MUS.next+=.26;MUS.step=(MUS.step+1)%32}
+}
+function musicStop(){
+  if(MUS.timer){clearInterval(MUS.timer);MUS.timer=null}
+  if(MUS.gain){try{MUS.gain.disconnect()}catch(e){}MUS.gain=null}
+}
+function musicStart(){
+  if(MUS.timer||!MUS_ON||MUTE||document.hidden)return;
+  const c=ac();if(!c)return;
+  MUS.gain=c.createGain();MUS.gain.gain.value=.5;MUS.gain.connect(c.destination);
+  MUS.next=c.currentTime+.1;MUS.step=0;MUS.timer=setInterval(musicSched,150);musicSched();
+}
 
 function newPick(){
   phase='pick';show('pick');
@@ -830,9 +917,9 @@ function reveal(){
   $('rv').innerHTML=h;sync();
 }
 function startGame(){
-  const mk=k=>{const cs=P.pool.filter(c=>c.o===k).map(c=>({m:M[c.mi],hp:M[c.mi].hp,max:M[c.mi].hp,shown:false}));if(P.lead[k]===1)cs.reverse();cs[0].shown=true;return{mons:cs,a:0,t:0,pts:0,dead:false}};
+  const itOn=$('items').value==='1',mk=k=>{const cs=P.pool.filter(c=>c.o===k).map(c=>({m:M[c.mi],hp:M[c.mi].hp,max:M[c.mi].hp,shown:false}));if(P.lead[k]===1)cs.reverse();cs[0].shown=true;const ks=Object.keys(ITEMS);return{mons:cs,a:0,t:0,pts:0,dead:false,item:itOn?ks[Math.floor(Math.random()*ks.length)]:null}};
   G={pl:NAMES.map((_,k)=>mk(k)),turn:0,rolled:false,bonus:false,extra:0,busy:false,over:false,die:0,rollN:0,hitK:0,hitN:0,evN:0,fx:[],log:[`${nm(0)} empieza. Tirá el dado o cambiá de monstruo.`]};
-  G.gid=Date.now();G.auto=$('auto').value==='1';G.crit=false;if(ADV)G.pl[1].mons.forEach(m=>{m.hp=m.max=Math.round(m.hp*(1+.2*ADV.s))});
+  G.gid=Date.now();G.auto=$('auto').value==='1';G.items=$('items').value==='1';G.wxOn=$('wxsel').value==='1';if(G.wxOn){G.wx={k:pickWx(null),left:N*3};G.log.unshift(`${WX[G.wx.k].ic} Clima inicial: ${WX[G.wx.k].n}${WX[G.wx.k].up.length||WX[G.wx.k].down.length?' ('+wxTxt(G.wx.k)+')':''}.`)}G.crit=false;if(ADV)G.pl[1].mons.forEach(m=>{m.hp=m.max=Math.round(m.hp*(1+.2*ADV.s))});
   G.limit=+$('limit').value||0;G.turnEnd=Date.now()+G.limit*1000;
   if(ABS.size){G.left=true;ABS.forEach(j=>{const q=G.pl[j];if(q){q.dead=true;q.mons.forEach(c=>{c.hp=0})}})}
   lastEv=0;phase='game';show('game');render();
@@ -870,6 +957,24 @@ const weakTo=m=>[...new Set(m.el.split('/').flatMap(x=>(WEAK[x]||'').split(',').
 // Veneno: solo envenenan los monstruos 100% Veneno. Todo monstruo con tipo Veneno (puro o parcial) es inmune.
 const hasPoisonType=m=>m.el.split('/').includes('Veneno');
 const isPoisonMon=m=>m.el==='Veneno';
+// ---- Ítems de apoyo (un solo uso, gratis en tu turno) ----
+const ITEMS={pot:{ic:'🧪',n:'Poción',d:'cura 25 HP a tu monstruo'},ene:{ic:'⚡',n:'Doble energía',d:'+2 piedras (máx. 4)'},esc:{ic:'🛡',n:'Escudo',d:'el próximo golpe que recibas hace la mitad'}};
+const itemUsable=pl=>!!pl.item&&ITEMS[pl.item]&&(pl.item==='pot'?pl.mons[pl.a].hp<pl.mons[pl.a].max:pl.item==='ene'?pl.t<4:!pl.shield);
+// ---- Clima: potencia (×1,25) y debilita (×0,8) tipos de ataque ----
+const WX={
+ despejado:{ic:'🌤',n:'Despejado',up:[],down:[],w:2},
+ sol:{ic:'☀️',n:'Sol',up:['Fuego'],down:['Agua'],w:1},
+ lluvia:{ic:'🌧',n:'Lluvia',up:['Agua'],down:['Fuego'],w:1},
+ tormenta:{ic:'⛈',n:'Tormenta',up:['Eléctrico'],down:[],w:1},
+ arena:{ic:'🏜',n:'Tormenta de arena',up:['Roca','Tierra','Acero'],down:[],w:1},
+ nieve:{ic:'❄️',n:'Nieve',up:['Hielo'],down:['Césped'],w:1}};
+const wxMult=m=>{const W=G&&G.wx&&WX[G.wx.k];if(!W)return 1;const t=m.el.split('/')[0];return W.up.includes(t)?1.25:W.down.includes(t)?.8:1};
+const wxTxt=k=>{const W=WX[k];return W.up.length||W.down.length?`${W.up.length?W.up.join('/')+' ▲':''}${W.up.length&&W.down.length?' · ':''}${W.down.length?W.down.join('/')+' ▼':''}`:'sin efectos'};
+function pickWx(skip){const ks=Object.keys(WX).filter(k=>k!==skip),tot=ks.reduce((a,k)=>a+WX[k].w,0);let r=Math.random()*tot;for(const k of ks){r-=WX[k].w;if(r<0)return k}return ks[0]}
+function changeWx(){
+  const k=pickWx(G.wx&&G.wx.k);G.wx={k,left:N*3};
+  say(`${WX[k].ic} Cambia el clima: ${WX[k].n}${WX[k].up.length||WX[k].down.length?' ('+wxTxt(k)+')':''}.`);ev('wx',{k});
+}
 const multTxt=e=>e>=2?'×2 (doble debilidad)':e>1?'×1,5 (súper efectivo)':'daño normal';
 const act=k=>G.pl[k].mons[G.pl[k].a],ben=k=>G.pl[k].mons[1-G.pl[k].a],cur=()=>act(G.turn);
 
@@ -906,12 +1011,18 @@ function renderTypeInfo(my,fk){
 }
 function sideHTML(k){
   const p=G.pl[k],m=act(k),b=ben(k),own=ME===k||(ME===null&&peekK===k),vis=!b.hidden&&(b.shown||own);
+  const v=ME!==null?ME:G.turn;let hint='';
+  if(!G.over&&!p.dead){
+    hint=`<div class="wk">Débil a: ${weakTo(m.m).map(tyChip).join('')}</div>`;
+    if(k!==v&&foes(v).includes(k)){const e=typeMult(act(v).m,m.m);hint+=`<div class="eff e${e>=2?2:e>1?1:0}">Tu ${tyChip(act(v).m.el.split('/')[0])} → ${e>=2?'▲▲ doble debilidad (×2)':e>1?'▲ súper efectivo (×1,5)':'daño normal'}</div>`}
+  }
   const bench=!vis?'Banco: una figurita oculta':`Banco: ${b.m.n} · ${b.hp}/${b.max} HP${b.hp<=0?' (fuera de combate)':''}<span class="more"> · ${b.m.a1} ${b.m.b} / ${b.m.a2} ${b.m.s}${!b.shown?' (oculta para tu rival)':''}</span>`;
   const pk=ME===null&&!b.hidden&&!b.shown&&b.hp>0?` <button class="b sm peek" data-k="${k}">Ver mi banco (3 s)</button>`:'';
   return `<div class="${cls(m.m)}">${fig(m.m)}</div>
   <div class="hpbar"><i style="width:${(m.hp/m.max)*100}%"></i></div>
-  <div class="row"><strong>${nm(k)}${TEAM?' · Eq. '+(k%2?'B':'A'):''}${p.dead?' · Eliminado':''}: ${m.hp} / ${m.max} HP${m.poison?' <span class="psn">☠</span>':''}${m.status?' <span class="psn">'+STK[m.status.s].ic+'</span>':''}</strong><span class="lbl"><span class="lg">Piedras de energía: </span><span class="sh">Piedras </span>${[0,1,2,3].map(i=>`<i class="coin${p.t>i?'':' off'}"></i>`).join('')}</span></div>
+  <div class="row"><strong>${nm(k)}${TEAM?' · Eq. '+(k%2?'B':'A'):''}${p.dead?' · Eliminado':''}: ${m.hp} / ${m.max} HP${m.poison?' <span class="psn">☠</span>':''}${m.status?' <span class="psn">'+STK[m.status.s].ic+'</span>':''}${p.shield?' 🛡':''}${G.items&&p.item?`<span class="itm">${(ME===k||ME===null&&G.turn===k)&&ITEMS[p.item]?ITEMS[p.item].ic:'🎒'}</span>`:''}</strong><span class="lbl"><span class="lg">Piedras de energía: </span><span class="sh">Piedras </span>${[0,1,2,3].map(i=>`<i class="coin${p.t>i?'':' off'}"></i>`).join('')}</span></div>
   <div class="pts">Puntos: <b>${p.pts}</b> <span class="pbar"><i style="width:${Math.min(100,p.pts/6*100)}%"></i></span> <small>6 puntos = 1 piedra</small></div>
+  ${hint}
   <div class="bench">${bench}${pk}</div>`;
 }
 
@@ -926,6 +1037,7 @@ function can(a,who){
        :a==='atk'?G.rolled&&t>=mo.m.cb&&!G.noAtk
        :a==='sp'?G.rolled&&t>=mo.m.cs&&!G.noAtk
        :a==='swap'?ben(G.turn).hp>0
+       :a==='item'?(!!G.items&&itemUsable(pl))
        :a==='keep'?G.rolled:false;
 }
 
@@ -953,7 +1065,7 @@ function renderStage2D(){
     el.querySelector('.pn').textContent=NAMES[k];
     el.querySelector('.mn').textContent=m.m.n+' · '+(m.m.st==='L'?'LEG':'N'+m.m.st);
     el.classList.toggle('st-poison',!!m.poison);['burn','para','freeze','sleep'].forEach(x=>el.classList.toggle('st-'+x,!!m.status&&m.status.s===x));
-    const eff=acting&&fo.includes(k)&&vm&&vm.m?typeMult(vm.m,m.m):1;
+    const eff=!G.over&&foes(v).includes(k)&&vm&&vm.m?typeMult(vm.m,m.m):1;
     el.querySelector('.ty').innerHTML=m.m.el.split('/').map(tyChip).join('')+(m.status?`<i class="sp">${STK[m.status.s].ic}</i>`:'')+(m.poison?'<i class="pz" title="Envenenado">☠</i>':'')+(eff>1?`<i class="ef">${eff>=2?'▲▲':'▲'}</i>`:'');
     el.querySelector('.sh i').style.width=Math.max(0,m.hp/m.max*100)+'%';
     el.querySelector('.hv').textContent=m.hp+'/'+m.max+' HP';
@@ -1215,6 +1327,13 @@ function playFx(e){
     const bd=body(e.to);
     if(bd){bd.classList.remove('dodge');void bd.offsetWidth;bd.classList.add('dodge');setTimeout(()=>bd.classList.remove('dodge'),450)}
     popText(e.to,'¡Falló!');
+  }else if(e.t==='item'){
+    const I=ITEMS[e.i],bd=body(e.k);if(!I||!bd)return;
+    popText(e.k,I.ic+' '+I.n,'poi');
+    const C=fxCenter(bd,st),cols=e.i==='pot'?['#46d36a','#c8ffd4','#ffffff']:e.i==='ene'?['#ffd23c','#fff3a0','#ffffff']:['#4aa3ff','#cfe6ff','#ffffff'];
+    fxBurst(C.x,C.y,cols,16,{r:44,g:-10,d:700});fxRing(C.x,C.y,cols[0],e.i==='esc'?3.2:2.4);
+  }else if(e.t==='wx'){
+    const W=WX[e.k];if(W){const t=document.createElement('div');t.className='dmg-pop se';t.style.cssText='left:50%;top:38%;font-size:1.5rem;transform:translateX(-50%)';t.textContent=W.ic+' '+W.n;st.appendChild(t);setTimeout(()=>t.remove(),1500)}
   }else if(e.t==='immune'){
     popText(e.to,'☠ Inmune','poi');
   }else if(e.t==='poison'){
@@ -1272,14 +1391,23 @@ function render(){
   renderTypeInfo(my,G.over?[]:foes(ME!==null?ME:G.turn));
   $('rollBtn').textContent=G.rolled&&G.bonus?'¡Tirar de nuevo!':'Tirar dado';
 
-  ['roll','stone','evo','atk','sp','swap','keep'].forEach(a=>$(a+'Btn').disabled=!can(a,ME));
+  ['roll','stone','evo','atk','sp','swap','keep','item'].forEach(a=>$(a+'Btn').disabled=!can(a,ME));
   $('stoneBtn').classList.toggle('hide',!!G.auto);
+  {const ib=$('itemBtn'),it=myP.item,I=it&&ITEMS[it];
+   ib.classList.toggle('hide',!(G.items&&I));
+   if(G.items&&I)ib.innerHTML=`${I.ic} Usar ${I.n}: ${I.d}<small>${!acting?'✔ listo para tu turno':itemUsable(myP)?'✔ gratis, no termina tu turno':'✖ ahora no sirve'}</small>`}
+  {const wb=$('wxBadge'),wf=$('wxFx');
+   if(G.wx&&WX[G.wx.k]){const W=WX[G.wx.k];wb.classList.remove('hide');wb.textContent=`${W.ic} ${W.n} · ${wxTxt(G.wx.k)} · ${G.wx.left} turno${G.wx.left===1?'':'s'}`;wf.className='wx-'+G.wx.k}
+   else{wb.classList.add('hide');wf.className=''}}
+  $('rematch').classList.toggle('hide',!(G.over&&!G.left&&!ADV));
+  $('emoBar').classList.toggle('hide',!(NET.role||BOT));
   const rolledNow=G.rollN!==lastRoll;lastRoll=G.rollN;setDie(rolledNow&&!!G.rollN);
   if(G.hitN!==lastHit){lastHit=G.hitN;if(G.hitN){const b=$('s'+G.hitK);b.classList.add('hit');setTimeout(()=>b.classList.remove('hit'),600)}}
   if(G.evN<lastEv)lastEv=0;
-  const newFx=[];(G.fx||[]).forEach(e=>{if(e.i>lastEv){lastEv=e.i;play(e.t);newFx.push(e)}});
+  const newFx=[];(G.fx||[]).forEach(e=>{if(e.i>lastEv){lastEv=e.i;if(e.t==='atk'||e.t==='sp')playHit(e.t,e.ty);else play(e.t);newFx.push(e)}});
+  if(G.over)musicStop();else musicStart();
   if(G.over&&phase==='game'&&recDone!==G.gid){recDone=G.gid;recordResult();if(ADV&&ME===0)advStep(G.winners.includes(0))}
-  $('again').textContent=(G.left&&NET.role)?'Volver al menú':(ADV&&ADV.lbl)||'Nueva partida';$('again').classList.toggle('hide',!G.over);
+  $('again').textContent=(G.left&&NET.role)?'Volver al menú':(ADV&&ADV.lbl)||'Nuevas figuritas (otro sorteo)';$('again').classList.toggle('hide',!G.over);
   $('log').innerHTML=G.log.slice(0,3).map(x=>`<div>${x}</div>`).join('');
 
   FXNOW=newFx;renderStage2D();
@@ -1310,7 +1438,7 @@ async function roll(){
 
 async function hit(kind,t){
   const a=cur(),pl=G.pl[G.turn],f=foes(G.turn),k=f.includes(t)?t:f[0],d=act(k),sp=kind==='sp',base=sp?a.m.s:a.m.b;
-  const mult=typeMult(a.m,d.m),crit=!!G.crit,dmg=Math.max(1,Math.round(base*mult*(crit?1.25:1)*(.9+Math.random()*.2)));
+  const mult=typeMult(a.m,d.m),wm=wxMult(a.m),crit=!!G.crit;let dmg=Math.max(1,Math.round(base*mult*wm*(crit?1.25:1)*(.9+Math.random()*.2)));
   pl.t-=sp?a.m.cs:a.m.cb;
   // Ataques de más de 50 puntos (legendarios y evoluciones finales): se define con una moneda.
   if(base>50){
@@ -1323,7 +1451,8 @@ async function hit(kind,t){
       return;
     }
   }
-  say(`${nm(G.turn)}: ¡${sp?a.m.a2:a.m.a1}! Quita ${dmg} HP a ${d.m.n} de ${nm(k)}.${mult>=2?' ¡Doble debilidad!':mult>1?' ¡Es súper efectivo!':''}${crit?' ¡Golpe crítico!':''}`);
+  let shd=false;if(G.pl[k].shield){dmg=Math.max(1,Math.ceil(dmg/2));delete G.pl[k].shield;shd=true}
+  say(`${nm(G.turn)}: ¡${sp?a.m.a2:a.m.a1}! Quita ${dmg} HP a ${d.m.n} de ${nm(k)}.${mult>=2?' ¡Doble debilidad!':mult>1?' ¡Es súper efectivo!':''}${crit?' ¡Golpe crítico!':''}${wm>1?` ${WX[G.wx.k].ic} El clima potencia el ataque.`:wm<1?` ${WX[G.wx.k].ic} El clima debilita el ataque.`:''}${shd?' 🛡 El escudo reduce el golpe a la mitad.':''}`);
   ev('proj',{f:G.turn,to:k,cl:a.m.cl,ty:fxKind(a.m.el)});
   render();await wait(420);
   d.hp=Math.max(0,d.hp-dmg);G.hitK=k;G.hitN++;ev(sp?'sp':'atk',{to:k,ty:fxKind(a.m.el),n:dmg,m:mult>=2?2:mult>1?1:0,c:crit?1:0});
@@ -1418,7 +1547,7 @@ function evolve(){
 
 function endTurn(){
   G.busy=false;
-  if(!G.over){do{G.turn=(G.turn+1)%N}while(G.pl[G.turn].dead);G.rolled=false;G.bonus=false;G.extra=0;G.crit=false;poisonTick();if(!G.over)statusStart();if(!G.over&&(G.skip||G.pl[G.turn].dead)){G.skip=false;return endTurn()}G.turnEnd=Date.now()+(G.limit||0)*1000;if(G.auto){const c=autoStones(G.pl[G.turn]);if(c){ev('stone');say(`${nm(G.turn)} canjea automáticamente ${c} piedra${c>1?'s':''}.`)}}if(!G.over)say(`Turno de ${nm(G.turn)}. Tirá el dado.`)}
+  if(!G.over){do{G.turn=(G.turn+1)%N}while(G.pl[G.turn].dead);G.rolled=false;G.bonus=false;G.extra=0;G.crit=false;delete G.pl[G.turn].shield;if(G.wx&&--G.wx.left<=0)changeWx();poisonTick();if(!G.over)statusStart();if(!G.over&&(G.skip||G.pl[G.turn].dead)){G.skip=false;return endTurn()}G.turnEnd=Date.now()+(G.limit||0)*1000;if(G.auto){const c=autoStones(G.pl[G.turn]);if(c){ev('stone');say(`${nm(G.turn)} canjea automáticamente ${c} piedra${c>1?'s':''}.`)}}if(!G.over)say(`Turno de ${nm(G.turn)}. Tirá el dado.`)}
   render();
 }
 
@@ -1431,6 +1560,14 @@ const doAtk=async t=>{G.busy=true;render();await hit('at',t);endTurn()};
 const doSp=async t=>{G.busy=true;render();await hit('sp',t);endTurn()};
 const doSwap=async()=>{G.busy=true;swap();render();await wait(700);endTurn()};
 const doKeep=()=>{say(`${nm(G.turn)} pasa el turno.`);endTurn()};
+const doItem=()=>{
+  const pl=G.pl[G.turn],it=pl.item,I=ITEMS[it];if(!I)return;
+  pl.item=null;const m=cur();
+  if(it==='pot'){const h=Math.min(25,m.max-m.hp);m.hp+=h;say(`${I.ic} ${nm(G.turn)} usa una Poción: ${m.m.n} recupera ${h} HP.`)}
+  else if(it==='ene'){const g=Math.min(2,4-pl.t);pl.t+=g;say(`${I.ic} ${nm(G.turn)} usa Doble energía: +${g} piedra${g>1?'s':''}.`)}
+  else{pl.shield=true;say(`${I.ic} ${nm(G.turn)} se protege con un Escudo: el próximo golpe que reciba hará la mitad de daño.`)}
+  ev('item',{k:G.turn,i:it});render();
+};
 
 function perform(a,i,who){
   if(a==='pick'){
@@ -1451,9 +1588,10 @@ function perform(a,i,who){
     if(P.ready.every(Boolean))startGame();else{rvFresh=true;reveal()}
     return;
   }
+  if(a==='rematch'){if(phase==='game'&&G&&G.over&&!G.left&&!ADV){startGame();say('🔁 ¡Revancha con las mismas figuritas!');render()}return}
   if(a==='again'){if(phase==='game'&&G.over){if(ADV)NAMES[1]=BOSS[ADV.s];newPick()}return}
   if(!can(a,who))return;
-  ({roll:doRoll,stone:doStone,evo:doEvo,atk:doAtk,sp:doSp,swap:doSwap,keep:doKeep})[a](i);
+  ({roll:doRoll,stone:doStone,evo:doEvo,atk:doAtk,sp:doSp,swap:doSwap,keep:doKeep,item:doItem})[a](i);
 }
 
 function dispatch(a,i){
@@ -1462,13 +1600,14 @@ function dispatch(a,i){
 }
 
 $('grid').onclick=e=>{const b=e.target.closest('button');if(b&&!b.disabled){play('pick');dispatch('pick',+b.dataset.i)}};
-['roll','stone','evo','atk','sp','swap','keep'].forEach(a=>$(a+'Btn').onclick=()=>dispatch(a,a==='atk'||a==='sp'?tgt():undefined));
+['roll','stone','evo','atk','sp','swap','keep','item'].forEach(a=>$(a+'Btn').onclick=()=>dispatch(a,a==='atk'||a==='sp'?tgt():undefined));
 $('rv').onclick=e=>{
   if(e.target.closest('#peekBtn')){rvPeek=true;rvFresh=true;reveal();return}
   const l=e.target.closest('[data-lead]');if(l){play('pick');dispatch('lead',+l.dataset.lead);return}
   if(e.target.closest('#readyBtn')){play('pick');dispatch('ready')}
 };
 $('sides').onclick=e=>{const b=e.target.closest('.peek');if(b){peekK=+b.dataset.k;render();setTimeout(()=>{peekK=null;if(G&&phase==='game')render()},3000);return}const sd=e.target.closest('.side');if(sd)pickTarget(+sd.id.slice(1))};
+$('rematch').onclick=()=>dispatch('rematch');
 $('again').onclick=()=>{if(G&&G.left&&NET.role){lost('La partida terminó. Como un jugador se fue, creen una sala nueva para seguir.');return}dispatch('again')};
 $('stageSprites').onclick=e=>{const s=e.target.closest('.spr');if(s)pickTarget(+s.dataset.k)};
 $('tgtBar').onclick=e=>{const b=e.target.closest('[data-t]');if(b)pickTarget(+b.dataset.t)};
@@ -1505,8 +1644,10 @@ function botAct(){
   const bad=bn.hp>=bn.max*.4&&typeMult(foe.m,me.m)>1&&typeMult(bn.m,foe.m)>=1;
   const canEvo = pl.t>=2 && getNextEvo(me.m);
 
+  const wantItem=G.items&&!G.rolled&&itemUsable(pl)&&(pl.item==='pot'?me.hp<=me.max*.55:pl.item==='ene'?pl.t<=2:Math.random()<.6);
   let a='keep';
-  if(!G.rolled||G.bonus)a='roll';
+  if(wantItem)a='item';
+  else if(!G.rolled||G.bonus)a='roll';
   else if(pl.pts>=6&&pl.t<4)a='stone';
   else if(canEvo && Math.random() < 0.7)a='evo';
   else if(pl.t>=me.m.cs&&Math.round(me.m.s*typeMult(me.m,foe.m))*(me.m.flip?.5:1)>=foe.hp)a='sp';
@@ -1518,6 +1659,26 @@ function botAct(){
   if(G.noAtk&&(a==='sp'||a==='atk'))a='keep';
   perform(a,null,1);
 }
+
+const EMO=['😀','😂','😮','😡','👏','🔥'];
+let lastEmo=0;const EMOT={};
+$('emoBar').innerHTML=EMO.map((e,i)=>`<button data-e="${i}" aria-label="Emote ${e}">${e}</button>`).join('');
+function showEmote(k,e){
+  if(!G||phase!=='game'||!(k>=0&&k<G.pl.length)||!EMO[e])return;
+  const st=$('stage2d'),s=$('spr'+k),bd=s&&s.querySelector('.spr-body');if(!st||!bd)return;
+  const r=st.getBoundingClientRect(),b=bd.getBoundingClientRect(),d=document.createElement('div');
+  d.className='emote';d.textContent=EMO[e];d.style.left=(b.left-r.left+b.width/2)+'px';d.style.top=(b.top-r.top+6)+'px';st.appendChild(d);
+  if(d.animate&&!NOANIM)d.animate([{transform:'translate(-50%,-60%) scale(.3)',opacity:0},{transform:'translate(-50%,-110%) scale(1.25)',opacity:1,offset:.2},{transform:'translate(-50%,-150%) scale(1)',opacity:1,offset:.75},{transform:'translate(-50%,-190%) scale(.9)',opacity:0}],{duration:1900,easing:'ease-out'}).onfinish=()=>d.remove();
+  setTimeout(()=>d.remove(),2000);play('emo');
+}
+function sendEmote(i){
+  if(!EMO[i]||Date.now()-lastEmo<1200||!G||phase!=='game')return;
+  lastEmo=Date.now();
+  if(NET.role==='guest'){if(!(NET.conn&&NET.conn.open))return;NET.conn.send(JSON.stringify({t:'emo',e:i}));showEmote(ME,i)}
+  else if(NET.role==='host'){bc({t:'emo',k:0,e:i});showEmote(0,i)}
+  else if(BOT){showEmote(0,i);if(Math.random()<.55)setTimeout(()=>showEmote(1,[0,1,2,4,5][Math.floor(Math.random()*5)]),900+Math.random()*900)}
+}
+$('emoBar').onclick=e=>{const b=e.target.closest('button');if(b)sendEmote(+b.dataset.e)};
 
 let CHAT=[],chatOpen=false,unread=0,lastChat=0;
 function chatVis(){
@@ -1551,6 +1712,7 @@ function onGuestMsg(raw){
   if(d.t==='chat')addChat(false,String(d.name||'').slice(0,14),String(d.text||'').slice(0,200));
   else if(d.t==='ban')setTimeout(()=>netMsg('Tu ID está suspendido: no podés jugar online.'),700);
   else if(d.t==='seat')ME=+d.k;
+  else if(d.t==='emo')showEmote(+d.k,+d.e);
   else if(d.t==='s'){try{applySnap(d)}catch(e){}}
 }
 
@@ -1852,6 +2014,7 @@ function onHostMsg(raw,k){
   }
   else if(!NET.hi[k])return;
   else if(d.t==='chat'){const t=String(d.text||'').slice(0,200);addChat(false,NAMES[k],t);bc({t:'chat',name:NAMES[k],text:t},k)}
+  else if(d.t==='emo'){const e=+d.e;if(!(e>=0&&e<EMO.length)||Date.now()-(EMOT[k]||0)<1000)return;EMOT[k]=Date.now();showEmote(k,e);bc({t:'emo',k,e},k)}
   else if(d.t==='a'&&typeof d.a==='string')perform(d.a,d.i,k);
 }
 function hostRoom(open){
@@ -1990,7 +2153,11 @@ $('chatIn').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('chatSend').c
 $('chatBox').onclick=e=>{const q=e.target.closest('[data-q]');if(q)sendChat(q.dataset.q)};
 renderChat();
 const updMute=()=>{$('muteBtn').textContent=MUTE?'🔇':'🔊';$('muteBtn').setAttribute('aria-label',MUTE?'Activar sonidos':'Silenciar sonidos')};
-$('muteBtn').onclick=()=>{MUTE=!MUTE;try{localStorage.setItem('mute',MUTE?'1':'0')}catch(e){}updMute();if(!MUTE)play('pick')};
+$('muteBtn').onclick=()=>{MUTE=!MUTE;try{localStorage.setItem('mute',MUTE?'1':'0')}catch(e){}updMute();if(MUTE)musicStop();else{play('pick');if(phase==='game'&&G&&!G.over)musicStart()}};
+const updMus=()=>{$('musBtn').classList.toggle('off',!MUS_ON);$('musBtn').setAttribute('aria-label',MUS_ON?'Apagar música':'Encender música');$('musBtn').title=MUS_ON?'Música: sí':'Música: no'};
+$('musBtn').onclick=()=>{MUS_ON=!MUS_ON;try{localStorage.setItem('music',MUS_ON?'1':'0')}catch(e){}updMus();if(MUS_ON){if(phase==='game'&&G&&!G.over)musicStart()}else musicStop()};
+updMus();
+document.addEventListener('visibilitychange',()=>{if(document.hidden)musicStop();else if(phase==='game'&&G&&!G.over)musicStart()});
 updMute();
 $('myPid').textContent='#'+PID;
 syncClock();loadBans();loadIce().then(()=>warmPeer());setInterval(loadBans,60000);
