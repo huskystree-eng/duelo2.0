@@ -1373,7 +1373,7 @@ let PUB=null,JX=null,ROOMS=[],RH='';
 const TURN_API='';
 const TURN_SERVERS=[];
 let ICE_EXTRA=TURN_SERVERS.slice(),ICE_OK=!TURN_API;
-const PEER_SERVER={}; // opcional: {host:'tu-peerserver.onrender.com',port:443,secure:true,path:'/'}
+const PEER_SERVER={}; // opcional: {host:'duelo-peerserver.onrender.com/',port:443,secure:true,path:'/'}
 const iceCfg=()=>Object.assign({debug:0},PEER_SERVER,{config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:global.stun.twilio.com:3478'},{urls:'stun:stun.cloudflare.com:3478'}].concat(ICE_EXTRA),iceCandidatePoolSize:4}});
 async function loadIce(){
   if(TURN_API){
