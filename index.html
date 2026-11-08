@@ -256,6 +256,43 @@ main{min-width:0}
 @keyframes dodge{30%,70%{transform:translateX(26px) rotate(8deg)}}
 .spr-body.dodge{animation:dodge .45s ease-in-out}
 @media (prefers-reduced-motion:reduce){.spr-body img,.spr-body.enter,.spr-body.dodge{animation:none}}
+
+/* ---- CELULAR: 3 y 4 jugadores compactos ---- */
+@media (max-width:719px){
+  body[data-n="3"] #stage2d,body[data-n="4"] #stage2d{height:254px;border-width:2px}
+  body[data-n="3"] .spr,body[data-n="4"] .spr{width:84px;margin-left:-42px}
+  body[data-n="3"] .spr-hud,body[data-n="4"] .spr-hud{width:84px;padding:1px 4px}
+  body[data-n="3"] .spr-hud .pn,body[data-n="4"] .spr-hud .pn{font-size:.54rem}
+  body[data-n="3"] .spr-hud .mn,body[data-n="4"] .spr-hud .mn{font-size:.5rem}
+  body[data-n="3"] .spr-hud .hv,body[data-n="4"] .spr-hud .hv{font-size:.48rem}
+  body[data-n="3"] .spr-body,body[data-n="4"] .spr-body{height:64px}
+  body[data-n="3"] .spr-body img,body[data-n="4"] .spr-body img{max-height:52px;max-width:76px}
+  body[data-n="3"] #stage2dContainer,body[data-n="4"] #stage2dContainer{margin-bottom:2px}
+  body[data-n="3"] #sides,body[data-n="4"] #sides{gap:5px}
+  body[data-n="3"] .side,body[data-n="4"] .side{padding:4px 7px}
+  body[data-n="3"] .side .fig,body[data-n="4"] .side .fig,
+  body[data-n="3"] .side .pts small,body[data-n="4"] .side .pts small,
+  body[data-n="3"] .side .pbar,body[data-n="4"] .side .pbar,
+  body[data-n="3"] .side .lbl .sh,body[data-n="4"] .side .lbl .sh,
+  body[data-n="3"] .side:not(.me) .bench,body[data-n="4"] .side:not(.me) .bench{display:none}
+  body[data-n="3"] .side .hpbar,body[data-n="4"] .side .hpbar{height:6px;margin:0 0 3px}
+  body[data-n="3"] .side .row strong,body[data-n="4"] .side .row strong{font-size:.66rem;line-height:1.15}
+  body[data-n="3"] .side .row,body[data-n="4"] .side .row{gap:1px}
+  body[data-n="3"] .side .coin,body[data-n="4"] .side .coin{width:12px;height:12px;margin-left:1px}
+  body[data-n="3"] .pts,body[data-n="4"] .pts{font-size:.62rem;margin-top:1px}
+  body[data-n="3"] .bench,body[data-n="4"] .bench{font-size:.58rem;margin-top:2px}
+  body[data-n="3"] .bench .peek,body[data-n="4"] .bench .peek{padding:2px 6px;font-size:.58rem}
+  body[data-n="3"] .banner,body[data-n="4"] .banner{font-size:.8rem}
+  body[data-n="3"] .banner .rules,body[data-n="4"] .banner .rules{display:none}
+  body[data-n="3"] .tgtbar,body[data-n="4"] .tgtbar{gap:4px;flex-wrap:nowrap}
+  body[data-n="3"] .tgtbar>span,body[data-n="4"] .tgtbar>span{display:none}
+  body[data-n="3"] .tgtbar .b.sm,body[data-n="4"] .tgtbar .b.sm{flex:1 1 0;min-width:0;font-size:.6rem;padding:4px 3px;line-height:1.15;overflow-wrap:anywhere}
+  body[data-n="3"] .mid,body[data-n="4"] .mid{gap:4px}
+  body[data-n="3"] .die,body[data-n="4"] .die{width:44px;height:44px;font-size:1.4rem}
+  body[data-n="3"] .mid .b,body[data-n="4"] .mid .b{padding:6px 5px;font-size:.68rem;line-height:1.15}
+  body[data-n="3"] .log,body[data-n="4"] .log{font-size:.7rem;min-height:0;padding:4px 8px}
+  body[data-n="3"] .log div:nth-child(n+2),body[data-n="4"] .log div:nth-child(n+2){display:none}
+}
 </style>
 </head>
 <body>
@@ -741,6 +778,7 @@ function startGame(){
   G={pl:NAMES.map((_,k)=>mk(k)),turn:0,rolled:false,bonus:false,extra:0,busy:false,over:false,die:0,rollN:0,hitK:0,hitN:0,evN:0,fx:[],log:[`${nm(0)} empieza. Tirá el dado o cambiá de monstruo.`]};
   G.gid=Date.now();G.auto=$('auto').value==='1';G.crit=false;if(ADV)G.pl[1].mons.forEach(m=>{m.hp=m.max=Math.round(m.hp*(1+.2*ADV.s))});
   G.limit=+$('limit').value||0;G.turnEnd=Date.now()+G.limit*1000;
+  if(ABS.size){G.left=true;ABS.forEach(j=>{const q=G.pl[j];if(q){q.dead=true;q.mons.forEach(c=>{c.hp=0})}})}
   lastEv=0;phase='game';show('game');render();
 }
 
@@ -1100,9 +1138,10 @@ function pickTarget(k){
 }
 
 function render(){
+  document.body.dataset.n=G.pl.length;
   const S=$('sides');if(S.children.length!==G.pl.length)S.innerHTML=G.pl.map((_,k)=>`<div class="side" id="s${k}"></div>`).join('');
   const fo=G.over?[]:foes(G.turn),acting=ME===null||G.turn===ME,tg=fo.length?tgt():-1;
-  G.pl.forEach((p,k)=>{const e=$('s'+k);e.innerHTML=sideHTML(k);e.classList.toggle('turn',G.turn===k&&!G.over);e.classList.toggle('dead',!!p.dead);e.classList.toggle('tgt',acting&&fo.length>1&&k===tg)});
+  G.pl.forEach((p,k)=>{const e=$('s'+k);e.innerHTML=sideHTML(k);e.classList.toggle('turn',G.turn===k&&!G.over);e.classList.toggle('dead',!!p.dead);e.classList.toggle('me',ME!==null?k===ME:k===G.turn);e.classList.toggle('tgt',acting&&fo.length>1&&k===tg)});
   const mo=cur(),mine=ME!==null&&G.turn===ME;
   const nextEvo = getNextEvo(mo.m);
 
@@ -1127,7 +1166,7 @@ function render(){
   if(G.evN<lastEv)lastEv=0;
   const newFx=[];(G.fx||[]).forEach(e=>{if(e.i>lastEv){lastEv=e.i;play(e.t);newFx.push(e)}});
   if(G.over&&phase==='game'&&recDone!==G.gid){recDone=G.gid;recordResult();if(ADV&&ME===0)advStep(G.winners.includes(0))}
-  $('again').textContent=(ADV&&ADV.lbl)||'Nueva partida';$('again').classList.toggle('hide',!G.over);
+  $('again').textContent=(G.left&&NET.role)?'Volver al menú':(ADV&&ADV.lbl)||'Nueva partida';$('again').classList.toggle('hide',!G.over);
   $('log').innerHTML=G.log.slice(0,3).map(x=>`<div>${x}</div>`).join('');
 
   FXNOW=newFx;renderStage2D();
@@ -1264,7 +1303,7 @@ $('rv').onclick=e=>{
   if(e.target.closest('#readyBtn')){play('pick');dispatch('ready')}
 };
 $('sides').onclick=e=>{const b=e.target.closest('.peek');if(b){peekK=+b.dataset.k;render();setTimeout(()=>{peekK=null;if(G&&phase==='game')render()},3000);return}const sd=e.target.closest('.side');if(sd)pickTarget(+sd.id.slice(1))};
-$('again').onclick=()=>dispatch('again');
+$('again').onclick=()=>{if(G&&G.left&&NET.role){lost('La partida terminó. Como un jugador se fue, creen una sala nueva para seguir.');return}dispatch('again')};
 $('stageSprites').onclick=e=>{const s=e.target.closest('.spr');if(s)pickTarget(+s.dataset.k)};
 $('tgtBar').onclick=e=>{const b=e.target.closest('[data-t]');if(b)pickTarget(+b.dataset.t)};
 $('names').oninput=e=>{const k=+e.target.dataset.k;NAMES[k]=e.target.value.trim()||'Jugador '+(k+1);renderPick()};
@@ -1354,11 +1393,11 @@ const cleanName=(v,d)=>{const n=String(v||'').trim().slice(0,14);return n&&clean
 const makeCode=()=>Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join('');
 const noNet=()=>({role:null,conn:null,conns:[],hi:[],peer:null});
 function bc(o,skip){NET.conns.forEach((c,k)=>{if(k&&k!==skip&&c&&c.open&&NET.hi[k])c.send(JSON.stringify(o))})}
-function lost(){
-  stopPub();
+function lost(msg){
+  stopPub();ABS=new Set();
   if(NET.peer)try{NET.peer.destroy()}catch(e){}
   const was=NET.role;NET=noNet();ME=null;
-  if(was){phase='lobby';show('lobby');netMsg('Se cortó la conexión con otro jugador. Creen una sala nueva para seguir.')}
+  if(was){phase='lobby';show('lobby');netMsg(typeof msg==='string'?msg:'Se cortó la conexión. Creen una sala nueva para seguir.')}
 }
 function applySnap(d){
   const prev=phase;P=d.P;G=d.G;TEAM=!!d.team;NAMES.length=0;d.names.forEach(n=>NAMES.push(n));N=NAMES.length;phase=d.phase;if(G)G.rx=Date.now();
@@ -1367,13 +1406,38 @@ function applySnap(d){
   else if(G){show('game');render()}
 }
 
+let ABS=new Set();
+function dropPlayer(k){
+  if(NET.role!=='host'||ABS.has(k))return;
+  ABS.add(k);
+  if(phase==='game'&&G){
+    const p=G.pl[k];if(!p||p.dead)return;
+    G.left=true;p.dead=true;p.mons.forEach(c=>{c.hp=0});
+    say(`${nm(k)} se fue de la partida y quedó eliminado.`);ev('ko',{k,id:p.mons[p.a].m.id});
+    const lv=G.pl.map((q,j)=>q.dead?-1:j).filter(j=>j>=0);
+    if(new Set(lv.map(j=>TEAM?j%2:j)).size<2){
+      G.over=true;G.busy=false;G.winners=G.pl.map((_,j)=>j).filter(j=>(TEAM?j%2:j)===(TEAM?lv[0]%2:lv[0]));
+      ev('win');say(TEAM?`¡Gana el equipo de ${lv.map(nm).join(' y ')}!`:`¡Gana ${nm(lv[0])}!`);render();
+    }else if(G.turn===k&&!G.busy)endTurn();
+    else render();
+    return;
+  }
+  // se fue durante la elección de figuritas
+  const rem=NAMES.map((_,j)=>j).filter(j=>!ABS.has(j));
+  if(new Set(rem.map(j=>TEAM?j%2:j)).size<2){lost('Los demás jugadores se fueron de la sala. Creen una sala nueva para seguir.');return}
+  if(!P)return;
+  while(took(k)<2){const f=shuffle(P.pool.filter(c=>c.o===null))[0];if(!f)break;f.o=k}
+  P.ready[k]=true;
+  if(phase==='pick'){if(NAMES.every((_,j)=>took(j)===2)){rvFresh=true;reveal()}else renderPick()}
+  else if(phase==='reveal'){if(P.ready.every(Boolean))startGame();else{rvFresh=true;reveal()}}
+}
 const OPEN_MS=15000,GRACE_MS=8000,PEND_MS=15000;
 let PUB=null,JX=null,ROOMS=[],RH='';
 
 const TURN_API='';
 const TURN_SERVERS=[];
 let ICE_EXTRA=TURN_SERVERS.slice(),ICE_OK=!TURN_API;
-const PEER_SERVER={}; // opcional: {host:'duelo-peerserver.onrender.com/',port:443,secure:true,path:'/'}
+const PEER_SERVER={}; // opcional: {host:'duelo-peerserver.onrender.com',port:443,secure:true,path:'/'}
 const iceCfg=()=>Object.assign({debug:0},PEER_SERVER,{config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:global.stun.twilio.com:3478'},{urls:'stun:stun.cloudflare.com:3478'}].concat(ICE_EXTRA),iceCandidatePoolSize:4}});
 async function loadIce(){
   if(TURN_API){
@@ -1624,6 +1688,7 @@ function onHostMsg(raw,k){
   else if(d.t==='a'&&typeof d.a==='string')perform(d.a,d.i,k);
 }
 function hostRoom(open){
+  ABS=new Set();
   if(!needPeer())return;
   if(BANS[PID]){netMsg('Tu ID está suspendido: no podés jugar online.');return}
   if(open!==true)open=false;
@@ -1658,7 +1723,7 @@ function hostRoom(open){
     const k=NET.conns.findIndex((x,j)=>j>0&&!x);
     if(k<0||phase!=='lobby'||NET.peer!==peer){c.close();return}
     NET.conns[k]=c;c.on('data',r=>{const i=NET.conns.indexOf(c);if(i>0)onHostMsg(r,i)});
-    const gone=()=>{const i=NET.conns.indexOf(c);if(i<1)return;if(phase==='lobby'){NET.conns[i]=null;NET.hi[i]=false;roomMsg();pubJ()}else lost()};
+    const gone=()=>{const i=NET.conns.indexOf(c);if(i<1)return;if(phase==='lobby'){NET.conns[i]=null;NET.hi[i]=false;roomMsg();pubJ()}else if(phase==='game'||phase==='pick'||phase==='reveal'){NET.conns[i]=null;NET.hi[i]=false;dropPlayer(i)}else lost()};
     c.on('close',gone);c.on('error',gone);
   };
   peer.on('connection',accept);
@@ -1692,7 +1757,7 @@ function joinRoom(code,room){
       netMsg('Conectado'+(c.relay?' (modo alternativo)':'')+'. Esperando que arranque la partida…');
     });
     c.on('data',r=>{if(done&&NET.conn===c)onGuestMsg(r)});
-    const bye=()=>{if(done&&NET.conn===c)lost()};
+    const bye=()=>{if(done&&NET.conn===c)lost('El anfitrión se fue o se cortó su conexión. Creen una sala nueva para seguir.')};
     c.on('close',bye);c.on('error',bye);
   };
   const p2p=()=>{const c=peer.connect('duelofig-'+code,{reliable:true,metadata:{pid:PID}});NET.conn=c;wire(c)};
