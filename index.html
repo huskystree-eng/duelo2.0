@@ -867,7 +867,9 @@ const STAT={Fuego:{s:'burn',p:.35,n:3,d:'pierde 4 HP al empezar cada uno de sus 
 const tyChip=t=>`<i class="tyc" style="background:${TYC[t]||'#777'}">${esc(t)}</i>`;
 const strongVs=t=>Object.keys(WEAK).filter(d=>WEAK[d].split(',').includes(t));
 const weakTo=m=>[...new Set(m.el.split('/').flatMap(x=>(WEAK[x]||'').split(',').filter(Boolean)))];
-const isPoisonMon=m=>m.el.split('/').includes('Veneno');
+// Veneno: solo envenenan los monstruos 100% Veneno. Todo monstruo con tipo Veneno (puro o parcial) es inmune.
+const hasPoisonType=m=>m.el.split('/').includes('Veneno');
+const isPoisonMon=m=>m.el==='Veneno';
 const multTxt=e=>e>=2?'×2 (doble debilidad)':e>1?'×1,5 (súper efectivo)':'daño normal';
 const act=k=>G.pl[k].mons[G.pl[k].a],ben=k=>G.pl[k].mons[1-G.pl[k].a],cur=()=>act(G.turn);
 
@@ -900,7 +902,7 @@ function renderTypeInfo(my,fk){
    `<p>▼ <b>Te pegan más fuerte</b> los ataques de tipo: ${ch(weak)}.</p>`+
    (fk.length?`<p><b>Tus rivales ahora:</b><br>${fk.map(j=>{const q=act(j);return `${nm(j)}: ${esc(q.m.n)} ${q.m.el.split('/').map(tyChip).join('')} → ${multTxt(typeMult(m,q.m))}${q.poison?' · ☠ envenenado':''}${q.status?' · '+STK[q.status.s].ic+' '+STK[q.status.s].lb.toLowerCase():''}`}).join('<br>')}</p>`:'')+
    (()=>{const S=STAT[t],K=S&&STK[S.s];return `<p>✨ <b>Estados:</b> ${S?`tus ataques de ${tyChip(t)} pueden dejar al rival ${K.ic} <b>${K.lb.toLowerCase()}</b> (${Math.round(S.p*100)}% al impactar): ${S.d}.`:`tus ataques de ${tyChip(t)} no causan estados.`} Los demás: 🔥 Fuego quema · ⚡ Eléctrico paraliza · ❄️ Hielo congela · 😴 Psíquico y Fantasma duermen. Cambiar de monstruo cura estos estados (el veneno no).</p>`})()+
-   `<p>☠ <b>Veneno:</b> si un monstruo con tipo Veneno impacta, envenena al rival: pierde 5 HP al empezar cada turno de quien lo envenenó. Se termina si ese monstruo cae fuera de combate o su dueño queda eliminado.${isPoisonMon(m)?' <b>¡Tu monstruo envenena al impactar!</b>':''}</p>`;
+   `<p>☠ <b>Veneno:</b> solo los monstruos <b>100% Veneno</b> envenenan al impactar: el rival pierde 5 HP al empezar cada turno de quien lo envenenó. Se termina si ese monstruo cae fuera de combate o su dueño queda eliminado. Los monstruos con tipo Veneno (puros o a medias) son <b>inmunes</b> al veneno, y los que lo son solo a medias no envenenan.${isPoisonMon(m)?' <b>¡Tu monstruo envenena al impactar!</b>':hasPoisonType(m)?' Tu monstruo es parcialmente Veneno: es inmune, pero no envenena.':''}</p>`;
 }
 function sideHTML(k){
   const p=G.pl[k],m=act(k),b=ben(k),own=ME===k||(ME===null&&peekK===k),vis=!b.hidden&&(b.shown||own);
@@ -1213,6 +1215,8 @@ function playFx(e){
     const bd=body(e.to);
     if(bd){bd.classList.remove('dodge');void bd.offsetWidth;bd.classList.add('dodge');setTimeout(()=>bd.classList.remove('dodge'),450)}
     popText(e.to,'¡Falló!');
+  }else if(e.t==='immune'){
+    popText(e.to,'☠ Inmune','poi');
   }else if(e.t==='poison'){
     const bd=body(e.to);
     if(bd){bd.classList.remove('anim-poison');void bd.offsetWidth;bd.classList.add('anim-poison');setTimeout(()=>bd.classList.remove('anim-poison'),750);
@@ -1326,7 +1330,10 @@ async function hit(kind,t){
   render();await wait(600);
   if(d.hp<=0)faint(k);
   else{
-    if(isPoisonMon(a.m)&&!d.poison){
+    if(isPoisonMon(a.m)&&hasPoisonType(d.m)){
+      say(`☠ ${d.m.n} de ${nm(k)} es de tipo Veneno: es inmune al veneno de ${a.m.n}.`);
+      ev('immune',{to:k});render();await wait(650);
+    }else if(isPoisonMon(a.m)&&!d.poison){
       d.poison={by:G.turn,mi:pl.a};
       say(`☠ ¡${a.m.n} envenena a ${d.m.n} de ${nm(k)}! Pierde 5 HP al empezar cada turno de ${nm(G.turn)}.`);
       ev('poison',{to:k,n:0});render();await wait(750);
