@@ -1373,7 +1373,8 @@ let PUB=null,JX=null,ROOMS=[],RH='';
 const TURN_API='';
 const TURN_SERVERS=[];
 let ICE_EXTRA=TURN_SERVERS.slice(),ICE_OK=!TURN_API;
-const iceCfg=()=>({debug:0,config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:global.stun.twilio.com:3478'},{urls:'stun:stun.cloudflare.com:3478'}].concat(ICE_EXTRA),iceCandidatePoolSize:4}});
+const PEER_SERVER={}; // opcional: {host:'tu-peerserver.onrender.com',port:443,secure:true,path:'/'}
+const iceCfg=()=>Object.assign({debug:0},PEER_SERVER,{config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:global.stun.twilio.com:3478'},{urls:'stun:stun.cloudflare.com:3478'}].concat(ICE_EXTRA),iceCandidatePoolSize:4}});
 async function loadIce(){
   if(TURN_API){
     try{
@@ -1632,7 +1633,9 @@ function hostRoom(open){
   const code=makeCode(),peer=new Peer('duelofig-'+code,iceCfg());
   NET=noNet();NET.role='host';NET.peer=peer;NET.code=code;NET.conns=Array(N).fill(null);ME=0;BOT=false;resetChat();
   netMsg('Creando sala…');
-  peer.on('open',async()=>{
+  let pubDone=false;
+  const pubRoom=async()=>{
+    if(pubDone)return;pubDone=true;
     if(!open){roomMsg();return}
     if(!clockOk)await syncClock();
     if(NET.peer!==peer)return;
@@ -1641,8 +1644,14 @@ function hostRoom(open){
     catch(e){netMsg('No se pudo publicar la sala abierta. Revisá tu conexión o usá una sala con código.');return}
     if(NET.peer!==peer){dbj('DELETE','rooms/'+code).catch(()=>{});return}
     PUB={code,exp,timer:setInterval(tickPub,250)};roomMsg();pollRooms();
+  };
+  peer.on('open',pubRoom);
+  peer.on('error',e=>{
+    if(e.type==='unavailable-id'){hostRoom(open);return}
+    const netErr=['network','server-error','socket-error','socket-closed'].includes(e.type);
+    if(netErr&&DB&&NET.peer===peer&&!pubDone){pubRoom();return} // modo alternativo por Firebase
+    if(!pubDone)netMsg('No se pudo crear la sala ('+e.type+'). Probá de nuevo.');
   });
-  peer.on('error',e=>{if(e.type==='unavailable-id'){hostRoom(open)}else netMsg('No se pudo crear la sala ('+e.type+'). Probá de nuevo.')});
   const accept=c=>{
     c._t0=Date.now();
     NET.conns.forEach((x,j)=>{if(j>0&&x&&!NET.hi[j]&&(x.peer===c.peer||(x.metadata&&c.metadata&&x.metadata.pid&&x.metadata.pid===c.metadata.pid)||Date.now()-(x._t0||0)>PEND_MS)){NET.conns[j]=null;try{x.close()}catch(e){}}});
