@@ -215,6 +215,47 @@ main{min-width:0}
 .spr-body.anim-hit{animation:hitShake .4s;filter:brightness(2) drop-shadow(0 0 12px #f30)}
 .spr-body.anim-evo{animation:evoGlow .9s}
 @media (max-width:400px){.spr{width:92px;margin-left:-46px}.spr-hud{width:92px}}
+.dmg-pop{white-space:nowrap;text-align:center}
+.dmg-pop small{display:block;font-size:.55em;color:#fff;letter-spacing:.02em}
+.dmg-pop.se{color:#ffd23c;font-size:2rem}
+.dmg-pop.nve{color:#9fb0c4;font-size:1.2rem}
+.dmg-pop.crit{color:#ff7a1a}
+#stage2d.shake{animation:hitShake .35s}
+@media (prefers-reduced-motion:reduce){#stage2d.shake{animation:none}}
+/* ---- ETAPA 2: efectos ---- */
+.fxp{position:absolute;z-index:205;pointer-events:none}
+.fxflash{position:absolute;inset:0;z-index:203;pointer-events:none}
+.fxring{position:absolute;width:60px;height:60px;border:4px solid #fff;border-radius:50%;z-index:206;pointer-events:none}
+.fxbolt{position:absolute;left:0;top:0;width:100%;height:100%;z-index:204;pointer-events:none;overflow:visible}
+.fxghost{position:absolute;max-height:70px;max-width:96px;object-fit:contain;transform-origin:bottom center;transform:translate(-50%,-100%);z-index:150;pointer-events:none}
+.spr-body img{animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{translate:0 -4px}}
+@keyframes sprEnter{0%{opacity:0;transform:translateY(-46px) scale(.3);filter:brightness(4)}60%{opacity:1;transform:translateY(4px) scale(1.08);filter:brightness(1.6)}100%{opacity:1;transform:none;filter:none}}
+.spr-body.enter{animation:sprEnter .55s var(--ed,0s) cubic-bezier(.2,.9,.3,1.2) both}
+.spr-body.evohide{opacity:0}
+.spr.dead .spr-body{visibility:hidden}
+/* dado 3D */
+.die{background:none;box-shadow:none;perspective:320px;--h:35px;position:relative;font-size:0}
+.die .cube{width:100%;height:100%;position:relative;transform-style:preserve-3d}
+.die .face{position:absolute;inset:0;border-radius:12px;background:linear-gradient(145deg,#fff,var(--paper) 60%,#d9d3c4);box-shadow:inset 0 0 0 2px #0002;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:14%;backface-visibility:hidden}
+.die .pip{border-radius:50%;background:var(--ink);margin:14%}
+.die .f1 .pip{background:#e23}
+.die .q{display:none;width:100%;height:100%;border-radius:14px;background:var(--paper);color:var(--ink);font:2.4rem 'Russo One',sans-serif;align-items:center;justify-content:center;box-shadow:0 4px 0 #0007}
+.die.idle .q{display:flex}
+.die.idle .cube{display:none}
+.die:not(.idle):after{content:"";position:absolute;left:10%;right:10%;bottom:-10px;height:10px;border-radius:50%;background:#0006;filter:blur(3px)}
+@media (max-width:719px){.die{--h:28px}.die .q{font-size:1.8rem}}
+/* piedras como gemas */
+.coin{width:16px;height:16px;border-radius:4px;transform:rotate(45deg);margin-left:7px;background:linear-gradient(135deg,#d9fbff,#35c8f0 55%,#1478b5);box-shadow:0 0 8px #35c8f0aa,inset 0 0 0 1px #fff8}
+.coin.off{background:#0005;box-shadow:inset 0 0 0 2px #fff3}
+.side .coin{margin-left:6px}
+.fxcoin{position:absolute;left:50%;top:45%;width:72px;height:72px;border-radius:50%;z-index:220;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;font:2rem 'Russo One',sans-serif;color:#8a5a00;background:radial-gradient(circle at 35% 30%,#fff3a0,#ffc928 55%,#b8860b);border:3px solid #fff9;box-shadow:0 0 22px #ffc928aa,0 4px 0 #0006}
+.fxcoin small{position:absolute;top:calc(100% + 6px);white-space:nowrap;font:.8rem 'Russo One',sans-serif;color:#fff;text-shadow:1px 1px 0 #000}
+.fxcoin.ok{box-shadow:0 0 26px #4c5,0 4px 0 #0006;color:#1a7a2a}
+.fxcoin.no{box-shadow:0 0 26px #e23,0 4px 0 #0006;color:#a01010;background:radial-gradient(circle at 35% 30%,#ddd,#9aa 55%,#566)}
+@keyframes dodge{30%,70%{transform:translateX(26px) rotate(8deg)}}
+.spr-body.dodge{animation:dodge .45s ease-in-out}
+@media (prefers-reduced-motion:reduce){.spr-body img,.spr-body.enter,.spr-body.dodge{animation:none}}
 </style>
 </head>
 <body>
@@ -228,6 +269,7 @@ main{min-width:0}
   <div class="box">
     <label class="fld">Tu nombre<input id="myname" maxlength="14" placeholder="Tu nombre" autocomplete="off" list="known"><datalist id="known"></datalist></label>
     <label class="fld">Tiempo por turno<select id="limit"><option value="0">Sin límite</option><option value="20">20 segundos</option><option value="30">30 segundos</option><option value="45" selected>45 segundos</option><option value="60">60 segundos</option></select></label>
+    <label class="fld">Canje de piedras<select id="auto"><option value="1" selected>Automático</option><option value="0">Manual</option></select></label>
     <label class="fld">Formato (en "Jugar acá" y "Online")<select id="fmt"><option value="ffa2">1 contra 1</option><option value="ffa3">Todos contra todos: 3 jugadores</option><option value="ffa4">Todos contra todos: 4 jugadores</option><option value="team">2 contra 2 (equipos)</option></select></label>
     <p class="rules">El nombre se usa online y contra la compu. El formato y el tiempo valen online (los elige quien crea la sala) y en pantalla compartida. Contra la compu siempre es 1 contra 1. Si se acaba, perdés el turno.</p>
   </div>
@@ -279,7 +321,7 @@ main{min-width:0}
   <div class="names" id="names"></div>
   <h2 id="pt"></h2>
   <details class="rules"><summary>Cómo se juega (tocá para ver)</summary><p>Sobre la mesa hay figuritas boca abajo y nadie sabe cuáles son. Cada jugador toma 2 a ciegas. Después cada uno ve solo sus propias figuritas y elige con cuál arrancar. La otra queda oculta para el rival hasta que entre al combate.<br>
-  <b>Cómo se juega:</b> en tu turno tirás el dado y sumás ese número a tus puntos. Cada 6 puntos podés canjearlos por una piedra de energía, y lo que sobra se guarda para el próximo turno. Si sacás un 6 directo, tirás de nuevo (hasta 2 veces extra). Ataque básico: 2 piedras. Ataque fuerte: 4 piedras. <b>Evolucionar:</b> podés pagar 2 piedras para hacer evolucionar a tu monstruo activo si posee una fase siguiente, aumentando sus HP y su poder de ataque. En tu turno también podés cambiar de monstruo: el que va al banco recupera entre 10 y 20 HP. Quedás eliminado cuando tus dos monstruos caen. <b>3 o 4 jugadores:</b> todos contra todos, gana el último en pie; antes de atacar elegí al rival que querés pegarle (botones "Atacar a" o tocando su monstruo). <b>2 contra 2:</b> los equipos son Jugador 1 y 3 contra Jugador 2 y 4; gana el equipo que deja sin monstruos al otro.</p></details>
+  <b>Cómo se juega:</b> en tu turno tirás el dado y sumás ese número a tus puntos. Cada 6 puntos podés canjearlos por una piedra de energía, y lo que sobra se guarda para el próximo turno. Si sacás un 6 directo, tirás de nuevo (hasta 2 veces extra). Cada monstruo tiene su propio costo según su poder: los más débiles gastan menos (ataque básico 1 piedra y fuerte 3), los intermedios 2 y 4, y los más poderosos 3 y 4. Los ataques de más de 50 puntos (los de nivel 3 y los legendarios) se definen con una moneda 🪙: si sale cruz, fallan y las piedras se pierden. Cada tipo tiene debilidades: si atacás a un monstruo débil a tu tipo, pegás ×1,5 (×2 si tiene doble debilidad). <b>Evolucionar:</b> podés pagar 2 piedras para hacer evolucionar a tu monstruo activo si posee una fase siguiente, aumentando sus HP y su poder de ataque. En tu turno también podés cambiar de monstruo: el que va al banco recupera entre 10 y 20 HP. Quedás eliminado cuando tus dos monstruos caen. <b>3 o 4 jugadores:</b> todos contra todos, gana el último en pie; antes de atacar elegí al rival que querés pegarle (botones "Atacar a" o tocando su monstruo). <b>2 contra 2:</b> los equipos son Jugador 1 y 3 contra Jugador 2 y 4; gana el equipo que deja sin monstruos al otro.</p></details>
   <div class="grid" id="grid"></div>
 </section>
 
@@ -300,7 +342,7 @@ main{min-width:0}
     <div class="banner" id="banner"></div>
     <div id="tgtBar" class="tgtbar hide"></div>
     <div class="mid">
-      <div class="die" id="die">?</div>
+      <div class="die idle" id="die"><div class="q">?</div><div class="cube"></div></div>
       <button class="b" id="rollBtn">Tirar dado</button>
       <button class="b" id="stoneBtn">Canjear 6 puntos por 1 piedra de energía</button>
       <button class="b evo" id="evoBtn">Evolucionar (2 piedras)</button>
@@ -509,7 +551,8 @@ const B={1:{hp:55,b:13,s:28,th:6},2:{hp:75,b:18,s:40,th:6},3:{hp:100,b:26,s:58,t
 const R={a:[.88,1.15],t:[1.15,.88],b:[1,1],k:[1.5,.9],l:[1,1],j:[.8,.5]};
 const C={g:'grass',f:'fire',w:'water',p:'poison',y:'psy',b:'bug',e:''};
 const M=D.split('\n').map(l=>{const [id,n,el,c,st,r,a1,a2]=l.split('|'),s=B[st],[h,d]=R[r];
-  return{id:+id,n,el,cl:C[c],c,st,a1,a2,hp:Math.round(s.hp*h/5)*5,b:Math.round(s.b*d),s:Math.round(s.s*d),th:s.th}});
+  const sv=Math.round(s.s*d),cc=sv<=32?[1,3]:sv<50?[2,4]:[3,4];
+  return{id:+id,n,el,cl:C[c],c,st,a1,a2,hp:Math.round(s.hp*h/5)*5,b:Math.round(s.b*d),s:sv,th:s.th,cb:cc[0],cs:cc[1],flip:sv>50}});
 const MAP_M = {};
 M.forEach(m => MAP_M[m.id] = m);
 
@@ -533,7 +576,7 @@ const BATTLE_BG_MAP = {
 
 const fig=m=>`<div class="oval"><b>${m.id}</b><img alt="" src="${IMG}${m.id}.png" onload="this.previousElementSibling.remove()" onerror="this.remove()"></div>
 <div class="brand">¡Atrápalos ya!</div>
-<div class="info"><div>ELEMENTO<span>${m.el}</span></div><div>ESTADO · HP<span>${m.st==='L'?'Legendario':m.st} · ${m.hp} HP</span></div><div>ATAQUE (2 piedras)<span>${m.a1} · ${m.b}</span></div><div>ATAQUE FUERTE (4 piedras)<span>${m.a2} · ${m.s}</span></div></div>
+<div class="info"><div>ELEMENTO<span>${m.el}</span></div><div>ESTADO · HP<span>${m.st==='L'?'Legendario':m.st} · ${m.hp} HP</span></div><div>ATAQUE (${m.cb} ${m.cb>1?'piedras':'piedra'})<span>${m.a1} · ${m.b}</span></div><div>ATAQUE FUERTE (${m.cs} piedras${m.flip?' · 🪙':''})<span>${m.a2} · ${m.s}</span></div></div>
 <div class="tag">#${m.id} ${m.n}</div>`;
 const cls=m=>'fig '+m.cl;
 let P,G=null,phase='lobby',ME=null,NET={role:null,conn:null,conns:[],hi:[],peer:null},N=2,TEAM=false,TG=-1,lastRoll=-1,lastHit=-1,lastEv=0,rvPeek=false,rvFresh=false,peekK=null,BOT=false,botPending=false,lastTickLeft=-1;
@@ -661,7 +704,8 @@ const SFX={
  stone(){tone(988,0,.08,'square',.1);tone(1319,.08,.25,'square',.1)},
  pick(){tone(720,0,.06,'square',.07)},
  flip(){noise(0,.14,.18,3200)},
- evo(){[440,554,659,880,1108].forEach((f,i)=>tone(f,i*.08,.2,'triangle',.15))}
+ evo(){[440,554,659,880,1108].forEach((f,i)=>tone(f,i*.08,.2,'triangle',.15))},
+ coin(){[600,800,1000,1300,1000,1300].forEach((f,i)=>tone(f,i*.1,.12,'triangle',.1))}
 };
 const play=t=>{if(SFX[t])SFX[t]()};
 
@@ -695,11 +739,33 @@ function reveal(){
 function startGame(){
   const mk=k=>{const cs=P.pool.filter(c=>c.o===k).map(c=>({m:M[c.mi],hp:M[c.mi].hp,max:M[c.mi].hp,shown:false}));if(P.lead[k]===1)cs.reverse();cs[0].shown=true;return{mons:cs,a:0,t:0,pts:0,dead:false}};
   G={pl:NAMES.map((_,k)=>mk(k)),turn:0,rolled:false,bonus:false,extra:0,busy:false,over:false,die:0,rollN:0,hitK:0,hitN:0,evN:0,fx:[],log:[`${nm(0)} empieza. Tirá el dado o cambiá de monstruo.`]};
-  G.gid=Date.now();if(ADV)G.pl[1].mons.forEach(m=>{m.hp=m.max=Math.round(m.hp*(1+.2*ADV.s))});
+  G.gid=Date.now();G.auto=$('auto').value==='1';G.crit=false;if(ADV)G.pl[1].mons.forEach(m=>{m.hp=m.max=Math.round(m.hp*(1+.2*ADV.s))});
   G.limit=+$('limit').value||0;G.turnEnd=Date.now()+G.limit*1000;
   lastEv=0;phase='game';show('game');render();
 }
 
+// Debilidades por tipo: tipo defensor -> tipos que le hacen más daño ("Planta" en el juego se llama Césped).
+const WEAK={
+Acero:'Lucha,Fuego,Tierra',
+Agua:'Césped,Eléctrico',
+Bicho:'Volador,Fuego,Roca',
+Dragón:'Hada,Hielo,Dragón',
+Eléctrico:'Tierra',
+Fantasma:'Fantasma,Siniestro',
+Fuego:'Tierra,Agua,Roca',
+Hada:'Acero,Veneno',
+Hielo:'Lucha,Acero,Roca,Fuego',
+Lucha:'Psíquico,Volador,Hielo',
+Normal:'Lucha',
+Césped:'Volador,Bicho,Veneno,Hielo,Fuego',
+Psíquico:'Bicho,Fantasma,Siniestro',
+Roca:'Lucha,Tierra,Acero,Agua,Césped',
+Siniestro:'Lucha,Hada,Bicho',
+Tierra:'Agua,Césped,Hielo',
+Veneno:'Tierra,Psíquico',
+Volador:'Roca,Hielo,Eléctrico'};
+// Ataca con su tipo principal. 1 = normal, 1.5 = débil, 2 = doble debilidad (los dos tipos del rival).
+const typeMult=(a,d)=>{const t=a.el.split('/')[0];let n=0;d.el.split('/').forEach(x=>{if((WEAK[x]||'').split(',').includes(t))n++});return n>1?2:n?1.5:1};
 const act=k=>G.pl[k].mons[G.pl[k].a],ben=k=>G.pl[k].mons[1-G.pl[k].a],cur=()=>act(G.turn);
 
 function getNextEvo(m){
@@ -726,8 +792,8 @@ function can(a,who){
   return a==='roll'?(!G.rolled||G.bonus)
        :a==='stone'?(pl.pts>=6&&t<4)
        :a==='evo'?(t>=2 && !!nextEvo)
-       :a==='atk'?G.rolled&&t>=2
-       :a==='sp'?G.rolled&&t>=4
+       :a==='atk'?G.rolled&&t>=mo.m.cb
+       :a==='sp'?G.rolled&&t>=mo.m.cs
        :a==='swap'?ben(G.turn).hp>0
        :a==='keep'?G.rolled:false;
 }
@@ -738,7 +804,9 @@ const SLOTS={2:[{x:25,b:4},{x:75,b:46}],3:[{x:50,b:3},{x:24,b:52},{x:76,b:52}],4
 function renderStage2D(){
   if(!G||phase!=='game')return;
   const n=G.pl.length,v=ME!==null?ME:G.turn,box=$('stageSprites'),slots=SLOTS[n]||SLOTS[4];
-  $('stage2d').className='n'+n;
+  const scn=$('stage2d');scn.classList.remove('n2','n3','n4');scn.classList.add('n'+n);
+  if(box.dataset.gid!==String(G.gid)){box.dataset.gid=G.gid;box.innerHTML=''}
+  const evoNow=FXNOW.some(e=>e.t==='evo');
   if(box.children.length!==n)box.innerHTML=G.pl.map((_,k)=>`<div class="spr" id="spr${k}" data-k="${k}"><div class="spr-hud"><div class="pn"></div><div class="mn"></div><div class="sh"><i></i></div><div class="hv"></div></div><div class="spr-body"><img class="sprite-img" alt=""></div></div>`).join('');
   const fo=G.over?[]:foes(G.turn),acting=ME===null||G.turn===ME,tg=fo.length?tgt():-1;
   const vm=act(v);
@@ -755,7 +823,19 @@ function renderStage2D(){
     el.querySelector('.mn').textContent=m.m.n+' · '+(m.m.st==='L'?'LEG':'N'+m.m.st);
     el.querySelector('.sh i').style.width=Math.max(0,m.hp/m.max*100)+'%';
     el.querySelector('.hv').textContent=m.hp+'/'+m.max+' HP';
-    const img=el.querySelector('img'),key=m.m.id+(back?'b':'f');
+    const img=el.querySelector('img'),key=m.m.id+(back?'b':'f'),bodyEl=el.querySelector('.spr-body'),prevId=el.dataset.mid;
+    if(String(m.m.id)!==prevId){
+      el.dataset.mid=m.m.id;
+      if(prevId&&evoNow&&k===G.turn){
+        el.dataset.prev=prevId;bodyEl.classList.add('evohide');
+        setTimeout(()=>bodyEl.classList.remove('evohide'),2600);
+      }else{
+        const dl=prevId?(FXNOW.some(e=>e.t==='ko'&&e.k===k)?.5:0):k*.15;
+        bodyEl.style.setProperty('--ed',dl+'s');
+        bodyEl.classList.remove('enter');void bodyEl.offsetWidth;bodyEl.classList.add('enter');
+        setTimeout(()=>bodyEl.classList.remove('enter'),900+dl*1000);
+      }
+    }
     if(img.dataset.k!==key){
       img.dataset.k=key;img.alt=m.m.n;
       const urls=back?[SPRITE_ANIM_BACK+m.m.id+'.gif',SPRITE_ANIM_FRONT+m.m.id+'.gif',IMG+m.m.id+'.png']:[SPRITE_ANIM_FRONT+m.m.id+'.gif',IMG+m.m.id+'.png'];
@@ -775,12 +855,243 @@ function spawnProjectile(a,b,cl){
   setTimeout(()=>p.remove(),440);
 }
 
-function popDamage(k,amount){
+function popDamage(k,amount,m,c){
   const st=$('stage2d'),s=$('spr'+k);if(!st||!s)return;
   const r=st.getBoundingClientRect(),b=s.querySelector('.spr-body').getBoundingClientRect();
-  const d=document.createElement('div');d.className='dmg-pop';d.textContent='-'+amount;
+  const d=document.createElement('div');d.className='dmg-pop'+(m>0?' se':m<0?' nve':'')+(c?' crit':'');
+  const lb=(c?'¡Crítico!':'')+(c&&m?' ':'')+(m>1?'¡Doble debilidad!':m>0?'¡Súper efectivo!':'');
+  d.textContent='-'+amount;
+  if(lb){const sm=document.createElement('small');sm.textContent=lb;d.appendChild(sm)}
   d.style.left=(b.left-r.left+b.width/2)+'px';d.style.top=(b.top-r.top)+'px';
-  st.appendChild(d);setTimeout(()=>d.remove(),800);
+  st.appendChild(d);setTimeout(()=>d.remove(),900);
+}
+
+/* ---------- ETAPA 2: efectos visuales (se reproducen desde eventos, igual en todos los dispositivos) ---------- */
+const NOANIM=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches);
+let FXNOW=[];
+const FXK={Fuego:'fire',Agua:'water',Eléctrico:'elec',Césped:'grass',Veneno:'poison',Psíquico:'psy',Bicho:'bug',Hielo:'ice',Lucha:'fight',Roca:'rock',Tierra:'rock',Fantasma:'dark',Siniestro:'dark',Hada:'fairy',Acero:'steel'};
+const FXC={fire:['#ff4a1a','#ffd23c'],water:['#1f8ee6','#bfeaff'],elec:['#ffc800','#fffbd0'],grass:['#2e9e3e','#c8f08a'],poison:['#8a2fb0','#e6b0ff'],psy:['#e8508f','#ffd0e6'],bug:['#7fb020','#e6f5a0'],ice:['#4cc3ee','#e8fbff'],fight:['#c43a22','#ffb08a'],rock:['#9a7d4a','#e6d3a8'],dark:['#4a3a6a','#a58fd0'],fairy:['#ff7ac6','#ffe0f3'],steel:['#8a98a8','#e8eef4'],normal:['#c9c9c9','#ffffff']};
+const FXSH={grass:'border-radius:20% 80%',ice:'border-radius:2px',rock:'border-radius:2px',steel:'border-radius:2px',fight:'border-radius:2px',elec:'border-radius:1px'};
+const fxKind=el=>FXK[String(el).split('/')[0]]||'normal';
+const fxCenter=(el,st,bottom)=>{const r=st.getBoundingClientRect(),b=el.getBoundingClientRect();return{x:b.left-r.left+b.width/2,y:(bottom?b.bottom:b.top+b.height/2)-r.top}};
+
+function fxDot(st,x,y,dx,dy,col,sz,dur,shape){
+  const d=document.createElement('div');d.className='fxp';
+  d.style.cssText=`left:${x}px;top:${y}px;width:${sz}px;height:${sz}px;background:${col};box-shadow:0 0 6px ${col};${shape||'border-radius:50%'}`;
+  st.appendChild(d);
+  if(!d.animate){setTimeout(()=>d.remove(),dur);return}
+  d.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px)) scale(.2)`,opacity:0}],{duration:dur,easing:'ease-out',fill:'both'}).onfinish=()=>d.remove();
+}
+function fxBurst(x,y,cols,n,o){
+  if(NOANIM)return;o=o||{};const st=$('stage2d');if(!st)return;
+  for(let i=0;i<n;i++){
+    const a=Math.PI*2*i/n+Math.random()*.6,d=(o.r||34)*(.6+Math.random()*.8);
+    fxDot(st,x,y,Math.cos(a)*d,Math.sin(a)*d+(o.g||0),cols[i%cols.length],4+Math.random()*(o.s||6),(o.d||500)+Math.random()*150,o.sh);
+  }
+}
+function fxRing(x,y,col,big){
+  if(NOANIM)return;const st=$('stage2d');if(!st)return;
+  const d=document.createElement('div');d.className='fxring';d.style.cssText=`left:${x}px;top:${y}px;border-color:${col}`;st.appendChild(d);
+  if(d.animate)d.animate([{transform:'translate(-50%,-50%) scale(.2)',opacity:1},{transform:`translate(-50%,-50%) scale(${big||2.4})`,opacity:0}],{duration:450,easing:'ease-out'}).onfinish=()=>d.remove();
+  else d.remove();
+}
+function fxFlashAll(col,peak,dur){
+  const st=$('stage2d');if(!st)return;
+  const f=document.createElement('div');f.className='fxflash';f.style.background=col;st.appendChild(f);
+  if(f.animate&&!NOANIM)f.animate([{opacity:0},{opacity:peak,offset:.3},{opacity:0}],{duration:dur}).onfinish=()=>f.remove();
+  else setTimeout(()=>f.remove(),dur);
+}
+function ghostImg(id,back,b,r){
+  const g=document.createElement('img');g.className='fxghost';g.alt='';
+  const urls=back?[SPRITE_ANIM_BACK+id+'.gif',SPRITE_ANIM_FRONT+id+'.gif',IMG+id+'.png']:[SPRITE_ANIM_FRONT+id+'.gif',IMG+id+'.png'];
+  let i=0;g.onerror=()=>{if(++i<urls.length)g.src=urls[i];else g.onerror=null};g.src=urls[0];
+  g.style.left=(b.left-r.left+b.width/2)+'px';g.style.top=(b.bottom-r.top)+'px';
+  $('stage2d').appendChild(g);return g;
+}
+
+// Proyectil según el tipo del atacante
+function fxShoot(ba,bd,kind){
+  const st=$('stage2d');if(!st||!ba||!bd)return;
+  const A=fxCenter(ba,st),T=fxCenter(bd,st),[c1,c2]=FXC[kind]||FXC.normal,sh=FXSH[kind]||'border-radius:50%';
+  if(kind==='elec'){
+    const NS='http://www.w3.org/2000/svg',svg=document.createElementNS(NS,'svg');svg.setAttribute('class','fxbolt');
+    const dx=T.x-A.x,dy=T.y-A.y,len=Math.hypot(dx,dy)||1,nx=-dy/len,ny=dx/len,pts=[];
+    for(let i=0;i<=8;i++){const t=i/8,o=(i===0||i===8)?0:(Math.random()-.5)*34;pts.push((A.x+dx*t+nx*o).toFixed(1)+','+(A.y+dy*t+ny*o).toFixed(1))}
+    [[c1,9],[c2,4]].forEach(([c,w])=>{const pl=document.createElementNS(NS,'polyline');pl.setAttribute('points',pts.join(' '));pl.setAttribute('fill','none');pl.setAttribute('stroke',c);pl.setAttribute('stroke-width',w);pl.setAttribute('stroke-linejoin','round');pl.setAttribute('stroke-linecap','round');svg.appendChild(pl)});
+    st.appendChild(svg);
+    if(svg.animate&&!NOANIM)svg.animate([{opacity:1},{opacity:.25},{opacity:1},{opacity:.2},{opacity:0}],{duration:380}).onfinish=()=>svg.remove();
+    else setTimeout(()=>svg.remove(),380);
+    fxBurst(A.x,A.y,[c1,c2],6,{r:20});
+    return;
+  }
+  const p=document.createElement('div'),sz=(kind==='fire'||kind==='water')?30:24;
+  p.className='proj';
+  p.style.cssText=`width:${sz}px;height:${sz}px;left:${A.x}px;top:${A.y}px;background:radial-gradient(circle,${c2},${c1});box-shadow:0 0 16px ${c1};${sh}`;
+  if(kind==='psy'){p.style.background='transparent';p.style.border=`4px solid ${c2}`;p.style.boxShadow=`0 0 14px ${c1},inset 0 0 10px ${c1}`}
+  st.appendChild(p);
+  const big=kind==='psy'?2.2:(kind==='fire'||kind==='water')?1.4:1;
+  if(p.animate&&!NOANIM)p.animate([
+    {left:A.x+'px',top:A.y+'px',opacity:1,transform:'translate(-50%,-50%) rotate(0deg) scale(.6)'},
+    {left:T.x+'px',top:T.y+'px',opacity:.4,transform:`translate(-50%,-50%) rotate(${(kind==='grass'||kind==='ice')?540:0}deg) scale(${big})`}
+  ],{duration:420,easing:'linear',fill:'forwards'});
+  else{p.style.left=T.x+'px';p.style.top=T.y+'px'}
+  setTimeout(()=>p.remove(),440);
+  if(!NOANIM){
+    const t0=performance.now(),dy=({fire:-22,water:20,poison:-14})[kind]||0;
+    const iv=setInterval(()=>{
+      const t=(performance.now()-t0)/420;if(t>=1){clearInterval(iv);return}
+      const x=A.x+(T.x-A.x)*t,y=A.y+(T.y-A.y)*t;
+      fxDot(st,x+(Math.random()-.5)*10,y+(Math.random()-.5)*10,(Math.random()-.5)*16,dy+(Math.random()-.5)*14,Math.random()<.5?c1:c2,5+Math.random()*6,360,sh);
+    },30);
+  }
+}
+
+// Impacto: destello del color del tipo, partículas y onda
+function fxImpact(k,kind,strong){
+  const st=$('stage2d'),s=$('spr'+k),bd=s&&s.querySelector('.spr-body');if(!st||!bd)return;
+  const C=fxCenter(bd,st),[c1,c2]=FXC[kind]||FXC.normal,sh=FXSH[kind];
+  const f=document.createElement('div');f.className='fxflash';
+  f.style.background=`radial-gradient(circle at ${C.x}px ${C.y}px,${c2}dd,${c1}66 30%,transparent 65%)`;st.appendChild(f);
+  if(f.animate&&!NOANIM)f.animate([{opacity:1},{opacity:0}],{duration:strong?460:300}).onfinish=()=>f.remove();
+  else setTimeout(()=>f.remove(),300);
+  const up=({fire:-26,poison:-14})[kind]||0,g=kind==='water'?26:up;
+  fxBurst(C.x,C.y,[c1,c2],strong?18:11,{r:strong?52:36,g,sh});
+  fxRing(C.x,C.y,c2,strong?3:2.2);
+  if(kind==='psy')setTimeout(()=>fxRing(C.x,C.y,c1,3.4),120);
+}
+
+function fxConfetti(){
+  if(NOANIM)return;
+  const d=$('die'),r=d.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,cols=['#ffc928','#ff5a3c','#35a0e6','#46b052','#e8508f','#ffffff'];
+  for(let i=0;i<30;i++){
+    const c=document.createElement('div'),w=6+Math.random()*6;
+    c.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;width:${w}px;height:${w*1.6}px;background:${cols[i%cols.length]};z-index:300;pointer-events:none;border-radius:1px`;
+    document.body.appendChild(c);
+    if(!c.animate){c.remove();continue}
+    const dx=(Math.random()-.5)*260,dy=-80-Math.random()*140;
+    c.animate([
+      {transform:'translate(0,0) rotate(0deg)',opacity:1},
+      {transform:`translate(${dx*.6}px,${dy}px) rotate(${Math.random()*360}deg)`,opacity:1,offset:.45},
+      {transform:`translate(${dx}px,${dy+260}px) rotate(${Math.random()*720}deg)`,opacity:0}
+    ],{duration:1100+Math.random()*500,easing:'ease-out'}).onfinish=()=>c.remove();
+  }
+}
+
+// Dado 3D
+(function(){
+  const PP={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]},
+    TF={1:'',6:'rotateY(180deg)',3:'rotateY(90deg)',4:'rotateY(-90deg)',2:'rotateX(90deg)',5:'rotateX(-90deg)'};
+  $('die').querySelector('.cube').innerHTML=[1,2,3,4,5,6].map(v=>`<div class="face f${v}" style="transform:${TF[v]} translateZ(var(--h))">${Array.from({length:9},(_,i)=>PP[v].includes(i)?'<i class="pip"></i>':'<i></i>').join('')}</div>`).join('');
+})();
+const DIEROT={1:[0,0],2:[-90,0],3:[0,-90],4:[0,90],5:[90,0],6:[0,180]};
+function setDie(anim){
+  const el=$('die'),cube=el.querySelector('.cube');
+  el.classList.toggle('idle',!G.die);
+  if(!G.die)return;
+  const [x,y]=DIEROT[G.die]||[0,0],fin=`rotateX(${x}deg) rotateY(${y}deg)`;
+  if(anim&&cube.animate&&!NOANIM)cube.animate([
+    {transform:`translateY(0px) rotateX(${x+720}deg) rotateY(${y+1080}deg)`},
+    {transform:`translateY(-26px) rotateX(${x+360}deg) rotateY(${y+540}deg)`,offset:.45},
+    {transform:`translateY(0px) ${fin}`}
+  ],{duration:700,easing:'ease-out'});
+  cube.style.transform=fin;
+}
+
+function popText(k,text){
+  const st=$('stage2d'),s=$('spr'+k);if(!st||!s)return;
+  const r=st.getBoundingClientRect(),b=s.querySelector('.spr-body').getBoundingClientRect();
+  const d=document.createElement('div');d.className='dmg-pop nve';d.textContent=text;
+  d.style.left=(b.left-r.left+b.width/2)+'px';d.style.top=(b.top-r.top)+'px';
+  st.appendChild(d);setTimeout(()=>d.remove(),900);
+}
+function fxCoin(ok){
+  const st=$('stage2d');if(!st)return;
+  const c=document.createElement('div');c.className='fxcoin';c.textContent='?';st.appendChild(c);
+  const show=()=>{c.textContent=ok?'★':'✖';c.classList.add(ok?'ok':'no');const l=document.createElement('small');l.textContent=ok?'CARA: ¡ACIERTA!':'CRUZ: FALLA';c.appendChild(l)};
+  if(c.animate&&!NOANIM){
+    c.animate([
+      {transform:'translate(-50%,-50%) translateY(50px) rotateY(0deg) scale(.6)',opacity:0},
+      {transform:'translate(-50%,-50%) translateY(-60px) rotateY(900deg) scale(1.3)',opacity:1,offset:.5},
+      {transform:'translate(-50%,-50%) translateY(0px) rotateY(1800deg) scale(1)',opacity:1}
+    ],{duration:900,easing:'ease-out',fill:'forwards'});
+    setTimeout(show,900);
+    setTimeout(()=>c.remove(),1450);
+  }else{show();setTimeout(()=>c.remove(),1200)}
+}
+
+// Reproduce las animaciones a partir de eventos: lo ven el host y los invitados.
+function playFx(e){
+  if(!G||phase!=='game')return;
+  const st=$('stage2d'),body=k=>{const s=$('spr'+k);return s&&s.querySelector('.spr-body')};
+  if(e.t==='proj'){
+    const ba=body(e.f),bd=body(e.to);
+    if(ba&&bd){
+      const r1=ba.getBoundingClientRect(),r2=bd.getBoundingClientRect();
+      ba.style.setProperty('--dx',(r2.left-r1.left)*.4+'px');ba.style.setProperty('--dy',(r2.top-r1.top)*.4+'px');
+      ba.classList.remove('atk');void ba.offsetWidth;ba.classList.add('atk');setTimeout(()=>ba.classList.remove('atk'),420);
+      fxShoot(ba,bd,e.ty||'normal');
+    }
+  }else if((e.t==='atk'||e.t==='sp')&&e.to!==undefined){
+    const bd=body(e.to);
+    if(bd){bd.classList.remove('anim-hit');void bd.offsetWidth;bd.classList.add('anim-hit');setTimeout(()=>bd.classList.remove('anim-hit'),400)}
+    popDamage(e.to,e.n,e.m,e.c);
+    const strong=e.t==='sp'||!!e.c||e.m>0;
+    fxImpact(e.to,e.ty||'normal',strong);
+    if(st&&strong){st.classList.remove('shake');void st.offsetWidth;st.classList.add('shake');setTimeout(()=>st.classList.remove('shake'),400)}
+    if(navigator.vibrate&&(ME===null||ME===e.to))try{navigator.vibrate(strong?80:40)}catch(x){}
+  }else if(e.t==='ko'){
+    const bd=body(e.k),s=$('spr'+e.k);
+    if(!bd||!s||NOANIM||!bd.animate)return;
+    const r=st.getBoundingClientRect(),b=bd.getBoundingClientRect(),sc=s.classList.contains('back')?1.25:1,g=ghostImg(e.id,sc>1,b,r);
+    const T=(x,y)=>`translate(-50%,-100%) scale(${(sc*x).toFixed(3)},${(sc*y).toFixed(3)})`;
+    g.animate([
+      {transform:T(1,1),filter:'none',opacity:1},
+      {transform:T(1.05,.95),filter:'brightness(3) saturate(0)',opacity:1,offset:.25},
+      {transform:T(1.2,.04),filter:'brightness(2) saturate(0)',opacity:0}
+    ],{duration:650,easing:'ease-in',fill:'forwards'}).onfinish=()=>g.remove();
+    setTimeout(()=>g.remove(),800);
+    const C=fxCenter(bd,st,true);fxBurst(C.x,C.y,['#d8d8d8','#8a8a8a','#ffffff'],12,{r:40,g:-8});
+  }else if(e.t==='evo'){
+    // Solo visual: la regla de evolución (vida completa) no se toca.
+    const k=G.turn,s=$('spr'+k),bd=body(k);if(!s||!bd)return;
+    const pid=s.dataset.prev,done=()=>bd.classList.remove('evohide');
+    if(!pid||NOANIM||!bd.animate){done();return}
+    const r=st.getBoundingClientRect(),b=bd.getBoundingClientRect(),sc=s.classList.contains('back')?1.25:1,g=ghostImg(pid,sc>1,b,r);
+    const T=f=>`translate(-50%,-100%) scale(${(sc*f).toFixed(3)})`,
+      SIL='brightness(0) invert(1) drop-shadow(0 0 10px #fff)',SIL2='brightness(0) invert(1) drop-shadow(0 0 22px #ffd23c)';
+    g.animate([
+      {transform:T(1),filter:'none'},
+      {transform:T(1),filter:SIL,offset:.18},
+      {transform:T(1.12),filter:SIL2,offset:.38},
+      {transform:T(1),filter:SIL,offset:.55},
+      {transform:T(1.2),filter:SIL2,offset:.7},
+      {transform:T(1.05),filter:SIL,offset:.82},
+      {transform:T(1.45),filter:SIL2}
+    ],{duration:1500,easing:'ease-in-out',fill:'forwards'});
+    setTimeout(()=>{
+      g.remove();fxFlashAll('#fff',.95,500);
+      const C=fxCenter(bd,st);
+      fxBurst(C.x,C.y,['#ffd23c','#ffffff','#ffeb99'],28,{r:70,d:800});fxRing(C.x,C.y,'#ffd23c',3.4);
+      done();
+      bd.animate([{transform:'scale(1.5)',filter:'brightness(4)'},{transform:'scale(1)',filter:'brightness(1)'}],{duration:550,easing:'ease-out'});
+    },1500);
+  }else if(e.t==='coin'){
+    fxCoin(!!e.ok);
+  }else if(e.t==='miss'){
+    const bd=body(e.to);
+    if(bd){bd.classList.remove('dodge');void bd.offsetWidth;bd.classList.add('dodge');setTimeout(()=>bd.classList.remove('dodge'),450)}
+    popText(e.to,'¡Falló!');
+  }else if(e.t==='six'){
+    fxConfetti();
+  }else if(e.t==='stone'){
+    document.querySelectorAll('#s'+G.turn+' .coin:not(.off)').forEach((c,i)=>{
+      if(c.animate&&!NOANIM)c.animate([
+        {transform:'rotate(45deg) scale(1)',filter:'brightness(1)'},
+        {transform:'rotate(225deg) scale(1.7)',filter:'brightness(2.2)'},
+        {transform:'rotate(405deg) scale(1)',filter:'brightness(1)'}
+      ],{duration:600,delay:i*60});
+    });
+  }
 }
 
 function pickTarget(k){
@@ -803,63 +1114,70 @@ function render(){
     tb.innerHTML='<span>🎯 Atacar a:</span>'+fo.map(k=>{const q=act(k);return `<button class="b sm${k===tg?' on':''}" data-t="${k}">${nm(k)} · ${esc(q.m.n)} ${q.hp}/${q.max}</button>`}).join('');
   }else{tb.classList.add('hide');tb.innerHTML=''}
   const tx=fo.length>1&&acting?' → '+NAMES[tg]:'';
-  $('atkBtn').textContent=`${mo.m.a1} · ${mo.m.b} HP (2 piedras)${tx}`;
-  $('spBtn').textContent=`${mo.m.a2} · ${mo.m.s} HP (4 piedras)${tx}`;
+  const ef=tg>=0?typeMult(mo.m,act(tg).m):1,et=ef>=2?' ▲▲ doble debilidad':ef>1?' ▲ súper efectivo':'';
+  $('atkBtn').textContent=`${mo.m.a1} · ${mo.m.b} HP (${mo.m.cb} ${mo.m.cb>1?'piedras':'piedra'})${tx}${et}`;
+  $('spBtn').textContent=`${mo.m.a2} · ${mo.m.s} HP (${mo.m.cs} piedras${mo.m.flip?' · 🪙 tira moneda':''})${tx}${et}`;
   $('evoBtn').textContent=nextEvo?`Evolucionar a ${nextEvo.n} (2 piedras)`:`Sin evolución disponible`;
   $('rollBtn').textContent=G.rolled&&G.bonus?'¡Tirar de nuevo!':'Tirar dado';
 
   ['roll','stone','evo','atk','sp','swap','keep'].forEach(a=>$(a+'Btn').disabled=!can(a,ME));
-  $('die').textContent=G.die||'?';
-  if(G.rollN!==lastRoll){lastRoll=G.rollN;if(G.rollN){const el=$('die');el.classList.remove('go');void el.offsetWidth;el.classList.add('go')}}
+  $('stoneBtn').classList.toggle('hide',!!G.auto);
+  const rolledNow=G.rollN!==lastRoll;lastRoll=G.rollN;setDie(rolledNow&&!!G.rollN);
   if(G.hitN!==lastHit){lastHit=G.hitN;if(G.hitN){const b=$('s'+G.hitK);b.classList.add('hit');setTimeout(()=>b.classList.remove('hit'),600)}}
   if(G.evN<lastEv)lastEv=0;
-  (G.fx||[]).forEach(e=>{if(e.i>lastEv){lastEv=e.i;play(e.t)}});
+  const newFx=[];(G.fx||[]).forEach(e=>{if(e.i>lastEv){lastEv=e.i;play(e.t);newFx.push(e)}});
   if(G.over&&phase==='game'&&recDone!==G.gid){recDone=G.gid;recordResult();if(ADV&&ME===0)advStep(G.winners.includes(0))}
   $('again').textContent=(ADV&&ADV.lbl)||'Nueva partida';$('again').classList.toggle('hide',!G.over);
   $('log').innerHTML=G.log.slice(0,3).map(x=>`<div>${x}</div>`).join('');
 
-  renderStage2D();
+  FXNOW=newFx;renderStage2D();
+  newFx.forEach(e=>{try{playFx(e)}catch(x){}});
   tick();
   sync();
   botThink();
 }
 const say=t=>G.log.unshift(t);
-function ev(t){G.evN=(G.evN||0)+1;G.fx=(G.fx||[]).slice(-7);G.fx.push({i:G.evN,t})}
+function ev(t,x){G.evN=(G.evN||0)+1;G.fx=(G.fx||[]).slice(-7);G.fx.push({...x,i:G.evN,t})}
 
+function autoStones(pl){let n=0;while(pl.pts>=6&&pl.t<4){pl.pts-=6;pl.t++;n++}return n}
 async function roll(){
   const d=rnd(),pl=G.pl[G.turn],mo=cur(),w=nm(G.turn);
   G.die=d;G.rollN++;ev('roll');pl.pts+=d;
   let msg=`${w} sacó un ${d}: suma ${d} (tiene ${pl.pts} puntos).`;
-  if(d===6){ev('six');
+  if(d===6){ev('six');G.crit=true;
     if(G.extra<2){G.bonus=true;G.extra++;msg+=` ¡Un 6! Tirá de nuevo (tiradas extra: ${G.extra}/2).`}
     else{G.bonus=false;msg+=' ¡Un 6! Pero ya usaste las 2 tiradas extra.'}
   }else{ev('pts');G.bonus=false}
-  if(pl.pts>=6&&pl.t<4)msg+=' Ya podés canjear una piedra.';
+  if(d===6)msg+=' ⚡ Tu próximo ataque será crítico.';
+  const cv=G.auto?autoStones(pl):0;
+  if(cv){ev('stone');msg+=` Canje automático: +${cv} piedra${cv>1?'s':''}.`}
+  else if(pl.pts>=6&&pl.t<4)msg+=' Ya podés canjear una piedra.';
   say(msg);
   G.rolled=true;render();await wait(800);
 }
 
 async function hit(kind,t){
-  const a=cur(),pl=G.pl[G.turn],f=foes(G.turn),k=f.includes(t)?t:f[0],d=act(k),sp=kind==='sp',dmg=sp?a.m.s:a.m.b;
-  pl.t-=sp?4:2;
-  say(`${nm(G.turn)}: ¡${sp?a.m.a2:a.m.a1}! Quita ${dmg} HP a ${d.m.n} de ${nm(k)}.`);
-
-  // Animar combate en 2D hacia el rival elegido
-  const sa=$('spr'+G.turn),sd=$('spr'+k),ba=sa&&sa.querySelector('.spr-body'),bd=sd&&sd.querySelector('.spr-body');
-  if(ba&&bd){
-    const r1=ba.getBoundingClientRect(),r2=bd.getBoundingClientRect();
-    ba.style.setProperty('--dx',(r2.left-r1.left)*.4+'px');ba.style.setProperty('--dy',(r2.top-r1.top)*.4+'px');
-    ba.classList.add('atk');setTimeout(()=>ba.classList.remove('atk'),420);
-    spawnProjectile(ba,bd,a.m.cl);
+  const a=cur(),pl=G.pl[G.turn],f=foes(G.turn),k=f.includes(t)?t:f[0],d=act(k),sp=kind==='sp',base=sp?a.m.s:a.m.b;
+  const mult=typeMult(a.m,d.m),crit=!!G.crit,dmg=Math.max(1,Math.round(base*mult*(crit?1.25:1)*(.9+Math.random()*.2)));
+  pl.t-=sp?a.m.cs:a.m.cb;
+  // Ataques de más de 50 puntos (legendarios y evoluciones finales): se define con una moneda.
+  if(base>50){
+    const ok=Math.random()<.5;
+    say(`${nm(G.turn)} usa ${sp?a.m.a2:a.m.a1} y tira la moneda… ${ok?'¡Cara! El ataque acierta.':'¡Cruz! El ataque falla.'}`);
+    ev('coin',{ok:ok?1:0});render();await wait(1400);
+    if(!ok){
+      ev('proj',{f:G.turn,to:k,cl:a.m.cl,ty:fxKind(a.m.el)});render();await wait(420);
+      ev('miss',{to:k});say(`${d.m.n} de ${nm(k)} esquiva el golpe.`);render();await wait(650);
+      return;
+    }
   }
-  await wait(220);
-  d.hp=Math.max(0,d.hp-dmg);G.hitK=k;G.hitN++;ev(sp?'sp':'atk');
-  if(bd){bd.classList.add('anim-hit');setTimeout(()=>bd.classList.remove('anim-hit'),400)}
-  popDamage(k,dmg);
-
+  say(`${nm(G.turn)}: ¡${sp?a.m.a2:a.m.a1}! Quita ${dmg} HP a ${d.m.n} de ${nm(k)}.${mult>=2?' ¡Doble debilidad!':mult>1?' ¡Es súper efectivo!':''}${crit?' ¡Golpe crítico!':''}`);
+  ev('proj',{f:G.turn,to:k,cl:a.m.cl,ty:fxKind(a.m.el)});
+  render();await wait(420);
+  d.hp=Math.max(0,d.hp-dmg);G.hitK=k;G.hitN++;ev(sp?'sp':'atk',{to:k,ty:fxKind(a.m.el),n:dmg,m:mult>=2?2:mult>1?1:0,c:crit?1:0});
   render();await wait(600);
   if(d.hp<=0){
-    const b=ben(k);say(`${d.m.n} quedó fuera de combate.`);ev('ko');
+    const b=ben(k);say(`${d.m.n} quedó fuera de combate.`);ev('ko',{k,id:d.m.id});
     if(b.hp>0){G.pl[k].a=1-G.pl[k].a;b.shown=true;ev('swap');say(`${nm(k)} saca a ${b.m.n}.`)}
     else{G.pl[k].dead=true;say(`${nm(k)} quedó eliminado.`);
       const lv=G.pl.map((p,j)=>p.dead?-1:j).filter(j=>j>=0);
@@ -895,11 +1213,11 @@ function evolve(){
 
 function endTurn(){
   G.busy=false;
-  if(!G.over){do{G.turn=(G.turn+1)%N}while(G.pl[G.turn].dead);G.rolled=false;G.bonus=false;G.extra=0;G.turnEnd=Date.now()+(G.limit||0)*1000;say(`Turno de ${nm(G.turn)}. Tirá el dado.`)}
+  if(!G.over){do{G.turn=(G.turn+1)%N}while(G.pl[G.turn].dead);G.rolled=false;G.bonus=false;G.extra=0;G.crit=false;G.turnEnd=Date.now()+(G.limit||0)*1000;if(G.auto){const c=autoStones(G.pl[G.turn]);if(c){ev('stone');say(`${nm(G.turn)} canjea automáticamente ${c} piedra${c>1?'s':''}.`)}}say(`Turno de ${nm(G.turn)}. Tirá el dado.`)}
   render();
 }
 
-function noActions(){const pl=G.pl[G.turn];return !G.bonus&&!(pl.pts>=6&&pl.t<4)&&pl.t<2&&ben(G.turn).hp<=0}
+function noActions(){const pl=G.pl[G.turn];return !G.bonus&&!(pl.pts>=6&&pl.t<4)&&pl.t<cur().m.cb&&!(pl.t>=2&&getNextEvo(cur().m))&&ben(G.turn).hp<=0}
 const doRoll=async()=>{G.busy=true;render();await roll();
   if(noActions()){await wait(400);endTurn()}else{G.busy=false;render()}};
 const doStone=()=>{const pl=G.pl[G.turn];pl.pts-=6;pl.t++;ev('stone');say(`${nm(G.turn)} canjea 6 puntos por una piedra de energía (le sobran ${pl.pts} puntos).`);render()};
@@ -979,17 +1297,19 @@ function botAct(){
   if(!BOT||phase!=='game'||!G||G.over||G.turn!==1||G.busy)return;
   const pl=G.pl[1],me=act(1),foe=act(0),bn=ben(1);
   const low=bn.hp>0&&me.hp<=me.max*.3&&bn.hp>me.hp;
+  const bad=bn.hp>=bn.max*.4&&typeMult(foe.m,me.m)>1&&typeMult(bn.m,foe.m)>=1;
   const canEvo = pl.t>=2 && getNextEvo(me.m);
 
   let a='keep';
   if(!G.rolled||G.bonus)a='roll';
   else if(pl.pts>=6&&pl.t<4)a='stone';
   else if(canEvo && Math.random() < 0.7)a='evo';
-  else if(pl.t>=4&&me.m.s>=foe.hp)a='sp';
-  else if(pl.t>=2&&me.m.b>=foe.hp)a='atk';
+  else if(pl.t>=me.m.cs&&Math.round(me.m.s*typeMult(me.m,foe.m))*(me.m.flip?.5:1)>=foe.hp)a='sp';
+  else if(pl.t>=me.m.cb&&Math.round(me.m.b*typeMult(me.m,foe.m))>=foe.hp)a='atk';
   else if(low&&Math.random()<.8)a='swap';
-  else if(pl.t>=4)a='sp';
-  else if(pl.t>=2&&Math.random()<.4)a='atk';
+  else if(bad&&Math.random()<.6)a='swap';
+  else if(pl.t>=me.m.cs)a='sp';
+  else if(pl.t>=me.m.cb&&Math.random()<.4)a='atk';
   perform(a,null,1);
 }
 
